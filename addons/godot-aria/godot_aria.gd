@@ -2,8 +2,10 @@ extends Node
 
 # Global javascript interface:
 # Accessible from window.GODOT_ARIA_PROXY on the browser.
-var debug = true
 var aria_proxy : JavaScriptObject = JavaScriptBridge.get_interface("GODOT_ARIA_PROXY")
+
+# Print debug messages
+var debug: bool = true
 
 func _ready() -> void:
 	if !OS.has_feature("web"):

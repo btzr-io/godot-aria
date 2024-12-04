@@ -1,7 +1,6 @@
 @tool
 extends EditorPlugin
 
-
 # Replace this value with a PascalCase autoload name, as per the GDScript style guide.
 const AUTOLOAD_NAME = "GodotARIA"
 
