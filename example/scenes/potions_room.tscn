@@ -299,7 +299,7 @@ sprite_frames = SubResource("SpriteFrames_1tdxn")
 position = Vector2(620, 300)
 script = ExtResource("1_m238r")
 aria_label = "Wizard Potion"
-aria_description = "A streange green liquid. Don't drink."
+aria_description = "A strange green liquid. Don't drink."
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Potion2"]
 shape = SubResource("CircleShape2D_5rip4")
