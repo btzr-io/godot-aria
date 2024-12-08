@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="google" content="notranslate" />
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-		<title>Loading game</title>
+		<title>Godot-ARIA: Web demo</title>
 		<style>
 html, body, #canvas {
 	margin: 0;
@@ -89,41 +89,40 @@ body {
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 
 	</head>
-	<body>
-		<canvas id="canvas" role="application" aria-busy="true" aria-label="Godot-ARIA" aria-describedby="status-progress">
-			<div aria-hidden="true">
-				Your browser does not support the canvas tag.
-			</div>
-		</canvas>
+	<body role="application">
+			<canvas id="canvas" role="main">
+				<div aria-hidden="true">
+					Your browser does not support the canvas tag.
+				</div>
+			</canvas>
 
 		<noscript>
 			Your browser does not support JavaScript.
 		</noscript>
 
-		<div id="global-aria-live-region" aria-live="polite" aria-busy="true"></div>
+		<div id="global-aria-live-region" aria-live="polite"></div>
 
-		<div id="status" data-hidden="false">
+		<div id="status" data-hidden="false" role="presentation">
 			<img id="status-splash" data-hidden="false" src="index.png" alt="" aria-hidden="true">
-			<progress id="status-progress" data-hidden="true" max="100"></progress>
+			<progress role="none" id="status-progress" data-hidden="true" max="100" aria-hidden="true"></progress>
 			<div id="status-notice" data-hidden="true" aria-live="assertive"></div>
 		</div>
 		<script>
 const ARIA_PROXY = class {
 	constructor() {}
-	update_aria_region(text_content, lang = "en", live = "polite", relevant = "text", atomic = false) {
+	update_aria_region(message, live = "polite", lang = "en") {
+		this.current_message == message
 		const region = document.getElementById("global-aria-live-region")
 		region.lang = lang
-		region.ariaAtomic = atomic.toString()
-		region.ariaRelevant = relevant
 		region.ariaLive = live
-		region.textContent = text_content
+		region.textContent = message
 	}
 };
 window.GODOT_ARIA_PROXY = new ARIA_PROXY()
 		</script>
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":12064,"index.wasm":35376909},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":37232,"index.wasm":35376909},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -137,6 +136,8 @@ const engine = new Engine(GODOT_CONFIG);
 	let initializing = true;
 	let statusMode = '';
 
+	window.GODOT_ARIA_PROXY.update_aria_region("Loading")
+
 	function setStatusMode(mode) {
 		if (statusMode === mode || !initializing) {
 			return;
@@ -144,6 +145,7 @@ const engine = new Engine(GODOT_CONFIG);
 		if (mode === 'hidden') {
 		  statusOverlay.setAttribute("data-hidden", "true")
 			initializing = false;
+			setTimeout(() => statusOverlay.remove(), 500)
 			return;
 		}
 
@@ -176,10 +178,10 @@ const engine = new Engine(GODOT_CONFIG);
 	}
 
 	function setStatusProgressEnd() {
-		canvas.ariaBusy = "false"
-		liveRegion.ariaBusy = "false"
-		statusProgress.max = 100
-		statusProgress.value = 100
+		// Complete last progress update
+		if (statusProgress.value != 100) {
+			statusProgress.value = 100
+		}
 		// Hide splash screen
 		setStatusMode('hidden')
 	}
@@ -194,8 +196,6 @@ const engine = new Engine(GODOT_CONFIG);
 			setStatusNotice('An unknown error occurred.');
 		}
 		setStatusMode('notice');
-		canvas.ariaBusy = "false"
-		liveRegion.ariaBusy = "false"
 		initializing = false;
 	}
 
@@ -236,10 +236,9 @@ const engine = new Engine(GODOT_CONFIG);
 		}
 	} else {
 		setStatusMode('progress');
-		engine.startGame({ 'onProgress': setStatusProgress }).then(() => {
-			// Force last progress update
-			setStatusProgressEnd()
-		}, displayFailureNotice);
+		engine.startGame({
+			'onProgress': setStatusProgress
+		}).then(setStatusProgressEnd, displayFailureNotice);
 	}
 }());
 		</script>
