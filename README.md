@@ -1,3 +1,5 @@
+> [!note]
+> Experimental plugin, feel free to contribute or report any issues to improve compatibility with all popular web browsers and screen readers.
 # Godot-ARIA
 A plugin for creating accessible rich internet applications with godot.
 
@@ -7,8 +9,10 @@ Just add the addons folder to your project and enable the plugin.
 See [Installing a plugin](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html#installing-a-plugin)
 
 ## Custom html page
+> [!warning]
+> The default godot web export HTML page has accessibility [issues](https://github.com/btzr-io/godot-aria/issues/4) and is not compatible with this pluign.
 
-While the web export templates provide a default HTML page it needs a few tweaks to make it compatible with this plugin, so you should use the [godot_aria_shell.html](https://github.com/btzr-io/godot-aria/blob/main/addons/godot-aria/godot_aria_shell.html) as the default or a starting point:
+This repository provides a more accessible version that can serve as a starting point: [godot_aria_shell.html](https://github.com/btzr-io/godot-aria/blob/main/addons/godot-aria/godot_aria_shell.html)
 
 ```shell
 Export > html/custom_html_shell = "res://addons/godot-aria/godot_aria_shell.html"
