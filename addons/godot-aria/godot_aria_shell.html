@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 	<head>
 		<meta charset="utf-8">
+		<meta name="google" content="notranslate" />
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 		<title>$GODOT_PROJECT_NAME</title>
 		<style>
@@ -14,7 +15,6 @@ html, body, #canvas {
 body {
 	color: white;
 	background-color: black;
-	overflow: hidden;
 	touch-action: none;
 }
 
@@ -26,13 +26,13 @@ body {
 	outline: none;
 }
 
-#status, #status-splash, #status-progress {
+#status[data-hidden="false"], #status-splash[data-hidden="false"], #status-progress[data-hidden="false"] {
 	position: absolute;
 	left: 0;
 	right: 0;
 }
 
-#status, #status-splash {
+#status[data-hidden="false"], #status-splash[data-hidden="false"] {
 	top: 0;
 	bottom: 0;
 }
@@ -43,26 +43,26 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	visibility: hidden;
 }
 
-#status-splash {
+#status-splash[data-hidden="false"] {
 	max-height: 100%;
 	max-width: 100%;
 	margin: auto;
 }
 
 #status-progress, #status-notice {
-	display: none;
+	display: block;
 }
 
-#status-progress {
+#status-progress[data-hidden="false"] {
 	bottom: 10%;
 	width: 50%;
 	margin: 0 auto;
 }
 
 #status-notice {
+	display: block;
 	background-color: #5b3943;
 	border-radius: 0.5rem;
 	border: 1px solid #9b3943;
@@ -75,32 +75,45 @@ body {
 	text-align: center;
 	z-index: 1;
 }
+
+[data-hidden="true"] {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
 		</style>
 		$GODOT_HEAD_INCLUDE
 	</head>
-	<body>
-		<canvas id="canvas" role="application">
-			Your browser does not support the canvas tag.
-		</canvas>
+	<body role="application">
+			<canvas id="canvas" role="main">
+				<div aria-hidden="true">
+					Your browser does not support the canvas tag.
+				</div>
+			</canvas>
 
 		<noscript>
 			Your browser does not support JavaScript.
 		</noscript>
 
-		<div id="global-aria-live-region" aria-live="assertive"></div>
+		<div id="global-aria-live-region" aria-live="polite"></div>
 
-		<div id="status">
-			<img id="status-splash" src="$GODOT_SPLASH" alt="">
-			<progress id="status-progress"></progress>
-			<div id="status-notice"></div>
+		<div id="status" data-hidden="false" role="presentation">
+			<img id="status-splash" data-hidden="false" src="$GODOT_SPLASH" alt="" aria-hidden="true">
+			<progress role="none" id="status-progress" data-hidden="true" max="100" aria-hidden="true"></progress>
+			<div id="status-notice" data-hidden="true" aria-live="assertive"></div>
 		</div>
 		<script>
 const ARIA_PROXY = class {
 	constructor() {}
-	update_aria_live(text_value) {
-		const update_area = document.getElementById("global-aria-live-region")
-		update_area.textContent = ""
-		update_area.textContent = text_value
+	update_aria_region(message, live = "polite", lang = "en") {
+		this.current_message == message
+		const region = document.getElementById("global-aria-live-region")
+		region.lang = lang
+		region.ariaLive = live
+		region.textContent = message
 	}
 };
 window.GODOT_ARIA_PROXY = new ARIA_PROXY()
@@ -112,25 +125,32 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {
+	const liveRegion = document.getElementById("global-aria-live-region")
 	const statusOverlay = document.getElementById('status');
 	const statusProgress = document.getElementById('status-progress');
 	const statusNotice = document.getElementById('status-notice');
+	const statusSplash = document.getElementById('status-splash');
 
 	let initializing = true;
 	let statusMode = '';
+
+	window.GODOT_ARIA_PROXY.update_aria_region("Loading")
 
 	function setStatusMode(mode) {
 		if (statusMode === mode || !initializing) {
 			return;
 		}
 		if (mode === 'hidden') {
-			statusOverlay.remove();
+		  statusOverlay.setAttribute("data-hidden", "true")
 			initializing = false;
+			setTimeout(() => statusOverlay.remove(), 500)
 			return;
 		}
-		statusOverlay.style.visibility = 'visible';
-		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
-		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+
+		statusOverlay.setAttribute("data-hidden", "false")
+		statusProgress.setAttribute("data-hidden", (mode != 'progress').toString())
+		statusNotice.setAttribute("data-hidden", (mode != 'notice').toString())
+		statusSplash.setAttribute("data-hidden", (mode == 'notice').toString())
 		statusMode = mode;
 	}
 
@@ -143,6 +163,25 @@ const engine = new Engine(GODOT_CONFIG);
 			statusNotice.appendChild(document.createTextNode(line));
 			statusNotice.appendChild(document.createElement('br'));
 		});
+	}
+
+	function setStatusProgress(current, total) {
+		if (current > 0 && total > 0) {
+			// Ensure percent format for all browsers
+			var format_value = Math.ceil((current / total) * 100)
+			statusProgress.value = format_value.toFixed(1)
+		} else {
+			statusProgress.removeAttribute('value');
+		}
+	}
+
+	function setStatusProgressEnd() {
+		// Complete last progress update
+		if (statusProgress.value != 100) {
+			statusProgress.value = 100
+		}
+		// Hide splash screen
+		setStatusMode('hidden')
 	}
 
 	function displayFailureNotice(err) {
@@ -196,18 +235,8 @@ const engine = new Engine(GODOT_CONFIG);
 	} else {
 		setStatusMode('progress');
 		engine.startGame({
-			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
-					statusProgress.value = current;
-					statusProgress.max = total;
-				} else {
-					statusProgress.removeAttribute('value');
-					statusProgress.removeAttribute('max');
-				}
-			},
-		}).then(() => {
-			setStatusMode('hidden');
-		}, displayFailureNotice);
+			'onProgress': setStatusProgress
+		}).then(setStatusProgressEnd, displayFailureNotice);
 	}
 }());
 		</script>

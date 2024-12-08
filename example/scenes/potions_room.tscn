@@ -1,0 +1,328 @@
+[gd_scene load_steps=42 format=3 uid="uid://cueed75lkevmp"]
+
+[ext_resource type="Script" path="res://example/scripts/potions_room.gd" id="1_avcxw"]
+[ext_resource type="Script" path="res://addons/godot-aria/nodes/area_focus_2d.gd" id="1_m238r"]
+[ext_resource type="Texture2D" uid="uid://c442j7wtbydj8" path="res://example/assets/potion_tileset.png" id="2_t27pg"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5rip4"]
+radius = 100.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q4f02"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h4587"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fxyd2"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_81ylg"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dj6xp"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_521el"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wcdq3"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ahr2"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6cjnx"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ttg1x"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(64, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t8aml"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lgrdl"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(80, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rwvne"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1h0mj"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6b2sa"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(32, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3njwt"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(48, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dq6sa"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(64, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h85g0"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(80, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d5ouq"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d808b"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(16, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l4tke"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(32, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vhfyo"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(48, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6tx47"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(64, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vuf7p"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(80, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cjch7"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(0, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4lqms"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(16, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cr5a3"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(80, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oqtcp"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(64, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ftiu"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(48, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l5qkn"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(32, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fi2p1"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(0, 80, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yykyy"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(16, 80, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_52xsj"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(32, 80, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dfje5"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(48, 80, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_71kjk"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(64, 80, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i2cgs"]
+atlas = ExtResource("2_t27pg")
+region = Rect2(80, 80, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1tdxn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q4f02")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h4587")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fxyd2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_81ylg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dj6xp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_521el")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wcdq3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7ahr2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6cjnx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ttg1x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t8aml")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lgrdl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rwvne")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1h0mj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6b2sa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3njwt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dq6sa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h85g0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d5ouq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d808b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l4tke")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vhfyo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6tx47")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vuf7p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cjch7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4lqms")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cr5a3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oqtcp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4ftiu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l5qkn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fi2p1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yykyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_52xsj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dfje5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_71kjk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i2cgs")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_avcxw")
+
+[node name="Title" type="Label" parent="."]
+custom_minimum_size = Vector2(800, 100)
+offset_left = 31.0
+offset_top = 18.0
+offset_right = 831.0
+offset_bottom = 155.0
+theme_override_font_sizes/font_size = 48
+text = "Potions room"
+autowrap_mode = 2
+
+[node name="Potion" type="Area2D" parent="."]
+position = Vector2(244, 300)
+script = ExtResource("1_m238r")
+aria_label = "Health Potion"
+aria_description = "A delicious red liquid used to restore health."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Potion"]
+shape = SubResource("CircleShape2D_5rip4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Potion"]
+texture_filter = 1
+position = Vector2(0, -10)
+scale = Vector2(12, 12)
+sprite_frames = SubResource("SpriteFrames_1tdxn")
+
+[node name="Potion2" type="Area2D" parent="."]
+position = Vector2(620, 300)
+script = ExtResource("1_m238r")
+aria_label = "Wizard Potion"
+aria_description = "A streange green liquid. Don't drink."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Potion2"]
+shape = SubResource("CircleShape2D_5rip4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Potion2"]
+texture_filter = 1
+position = Vector2(0, -10)
+scale = Vector2(12, 12)
+sprite_frames = SubResource("SpriteFrames_1tdxn")
+frame = 10
+
+[node name="Potion3" type="Area2D" parent="."]
+position = Vector2(988, 300)
+script = ExtResource("1_m238r")
+aria_label = "Mana Elixir"
+aria_description = "A tasty energy drink. Not sure where the blue color comes from."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Potion3"]
+shape = SubResource("CircleShape2D_5rip4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Potion3"]
+texture_filter = 1
+position = Vector2(0, -10)
+scale = Vector2(12, 12)
+sprite_frames = SubResource("SpriteFrames_1tdxn")
+frame = 1

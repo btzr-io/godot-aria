@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckecmwtnsvnl7"]
+
+[ext_resource type="Script" path="res://example/scripts/title_label.gd" id="1_3l7dk"]
+
+[node name="MenuExample" type="CenterContainer"]
+offset_right = 1240.0
+offset_bottom = 680.0
+mouse_filter = 2
+
+[node name="Layout" type="BoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 64
+vertical = true
+
+[node name="Title" type="Label" parent="Layout"]
+custom_minimum_size = Vector2(800, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Game ready!
+Press x to continue."
+autowrap_mode = 2
+script = ExtResource("1_3l7dk")

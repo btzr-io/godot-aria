@@ -5,6 +5,7 @@ extends EditorPlugin
 const AUTOLOAD_NAME = "GodotARIA"
 
 func _enable_plugin():
+	# add_custom_type("AreaFocus2D", "Area2D", preload("nodes/area_focus_2d.gd"), preload("icons/Area2D.svg"))
 	# The autoload can be a scene or script file.
 	add_autoload_singleton(AUTOLOAD_NAME, "res://addons/godot-aria/godot_aria.gd")
 	
