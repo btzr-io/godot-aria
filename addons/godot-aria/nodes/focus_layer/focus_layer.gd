@@ -27,6 +27,8 @@ func create_focus_control(area: AreaFocus2D) -> FocusControl:
 	focus_control.size = size
 	focus_control.area_target = area
 	focus_control.global_position = area.global_position - size * 0.5
+	if area.focus_style:
+		focus_control.add_theme_stylebox_override("focus", area.focus_style)
 	$MainContainer.add_child(focus_control)
 	return focus_control
 	

@@ -3,6 +3,7 @@ extends Node2D
 # Called when the node enters the scene tree for the first time.
 func read_instructions():
 	GodotARIA.notify_screen_reader($Title.text + ": Use Tab or Arrow keys to explore the room, press enter or space to inspect an object. Press R to read again.")
+
 func _ready() -> void:
 	read_instructions()
 	await get_tree().create_timer(0.75).timeout

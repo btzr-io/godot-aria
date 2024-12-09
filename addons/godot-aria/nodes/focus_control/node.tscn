@@ -1,15 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://cuc71twsvpywp"]
 
+[ext_resource type="StyleBox" uid="uid://d3hqejb8a1d11" path="res://addons/godot-aria/nodes/focus_control/focus_style.tres" id="1_1ura3"]
 [ext_resource type="Script" path="res://addons/godot-aria/nodes/focus_control/focus_control.gd" id="1_hhea4"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0dv5m"]
-bg_color = Color(0, 1, 1, 0)
-draw_center = false
-border_width_left = 8
-border_width_top = 8
-border_width_right = 8
-border_width_bottom = 8
-border_color = Color(0, 0.745098, 1, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_supyi"]
 
@@ -21,7 +13,7 @@ border_color = Color(0, 0.745098, 1, 1)
 offset_right = 16.0
 offset_bottom = 16.0
 mouse_default_cursor_shape = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_0dv5m")
+theme_override_styles/focus = ExtResource("1_1ura3")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_supyi")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_87q80")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2f3ap")

@@ -15,11 +15,10 @@ func handle_remove():
 	queue_free()
 
 func handle_focus():
-	# GodotARIA.notify_screen_reader(area_target.aria_label)
-	pass
+	area_target.focus_entered.emit()
 	
 func handle_blur():
-	pass
+	area_target.focus_exited.emit()
 
 func _pressed() -> void:
 	var aria_label = area_target.aria_description
