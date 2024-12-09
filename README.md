@@ -12,7 +12,7 @@ Screen Reader | Browsers | Compatibility
 ## Installation
 Just add the addons folder to your project and enable the plugin.
 
-See [Installing a plugin](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html#installing-a-plugin)
+See: [Installing a plugin](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html#installing-a-plugin)
 
 ## Custom html page
 > [!warning]
