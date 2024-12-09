@@ -5,7 +5,7 @@ A plugin for creating accessible rich internet applications with godot.
 
 Screen Reader | Browsers | Compatibility
 | --- | --- | --- |
-| NVDA | Firefox, Chrome, Edge | 100%
+| NVDA | Firefox, Chrome, Edge | Yes
 | JAWS | Firefox, Chrome, Edge | Uknown [#5](https://github.com/btzr-io/godot-aria/issues/5)
 | TalkBack | Firefox, Chrome | Uknown https://github.com/btzr-io/godot-aria/issues/9
 
