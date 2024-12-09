@@ -1,7 +1,13 @@
 > [!note]
-> Experimental plugin, feel free to contribute or report any issues to improve compatibility with all popular web browsers and screen readers.
+> Experimental plugin, feel free to contribute or report any issues to improve compatibility with more web browsers and screen readers.
 # Godot-ARIA
 A plugin for creating accessible rich internet applications with godot.
+
+Screen Reader | Browsers | Compatibility
+| --- | --- | --- |
+| NVDA | Firefox, Chrome, Edge | 100%
+| JAWS | Firefox, Chrome, Edge | 75%
+| TalkBack | Firefox, Chrome | Uknown
 
 ## Installation
 Just add the addons folder to your project and enable the plugin.
