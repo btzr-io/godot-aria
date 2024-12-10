@@ -6,8 +6,9 @@ A plugin for creating accessible rich internet applications with godot.
 Screen Reader | Browsers | Compatibility
 | --- | --- | --- |
 | NVDA | Firefox, Chrome, Edge | Yes
-| JAWS | Firefox, Chrome, Edge | Uknown [#5](https://github.com/btzr-io/godot-aria/issues/5)
-| TalkBack | Firefox, Chrome | Uknown https://github.com/btzr-io/godot-aria/issues/9
+
+
+For information about other screen readers or browsers, please see: [current live region behaviour](https://tetralogical.com/blog/2024/05/01/why-are-my-live-regions-not-working/#current-live-region-behaviour).
 
 ## Installation
 Just add the addons folder to your project and enable the plugin.
