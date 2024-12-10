@@ -27,7 +27,17 @@ Export > html/custom_html_shell = "res://addons/godot-aria/godot_aria_shell.html
 See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tutorials/platform/web/customizing_html5_shell.html#custom-html-page-for-web-export)
 
 ## Usage
-Global class `GodotARIA`:
+Global class `GodotARIA` provides a way to send messages and alerts to screen readers as [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live) updates.
+
+### GodotARIA.notify_screen_reader
+Awaits for a natural pause before speaking up. It won’t interrupt what the screen reader is currently announcing. Equivalent to aria-live [polite](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#polite).
 ```py
-  GodotARIA.notify_screen_reader(message: Variant)
+  GodotARIA.notify_screen_reader(message: Variant, values: Dictionary)
 ```
+
+### GodotARIA.alert_screen_reader
+Speak an alert, interrupts whatever the screen reader is currently announcing. Equivalent to aria-live [assertive](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#assertive).
+```py
+  GodotARIA.notify_screen_reader(message: Variant, values: Dictionary)
+```
+
