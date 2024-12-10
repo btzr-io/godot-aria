@@ -23,6 +23,7 @@ signal focus_entered
 @export_category("Accessibility")
 @export var aria_label : String
 @export_multiline var aria_description : String
+
 var focus_control : FocusControl
 
 func grab_focus():
