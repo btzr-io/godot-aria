@@ -6,8 +6,6 @@ func read_instructions():
 
 func _ready() -> void:
 	read_instructions()
-	await get_tree().create_timer(0.75).timeout
-	$Potion.grab_focus()
 	
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("Read"):

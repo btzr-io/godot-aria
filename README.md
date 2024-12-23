@@ -38,6 +38,5 @@ Awaits for a natural pause before speaking up. It won’t interrupt what the scr
 ### GodotARIA.alert_screen_reader
 Speak an alert, interrupts whatever the screen reader is currently announcing. Equivalent to aria-live [assertive](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#assertive).
 ```py
-  GodotARIA.notify_screen_reader(message: Variant, values: Dictionary)
+  GodotARIA.alert_screen_reader(message: Variant, values: Dictionary)
 ```
-

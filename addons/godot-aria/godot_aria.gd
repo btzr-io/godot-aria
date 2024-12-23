@@ -2,7 +2,6 @@ extends Node
 
 # Global javascript interface:
 # Accessible from window.GODOT_ARIA_PROXY on the browser.
-var focus_layer_scene = preload("./nodes/focus_layer/node.tscn")
 var aria_proxy : JavaScriptObject = JavaScriptBridge.get_interface("GODOT_ARIA_PROXY")
 
 # Print debug messages
@@ -11,7 +10,6 @@ var debug: bool = true
 # Default to true for native screen reader usage:
 # Set to false if you are using a custom TTS
 var native_screen_reader = true
-
 var allow_repetition = true
 
 # Cahce to detect updates
@@ -19,39 +17,67 @@ var last_values = {}
 var last_message = ""
 var last_message_raw = ""
 
+# Focus managment
 var focus_layer : CanvasLayer
-	
+var focus_layer_scene = preload("./nodes/focus_layer/node.tscn")
+var focus_manager : FocusManager
+
 func setup_focus_layer():
 	focus_layer = focus_layer_scene.instantiate()
 	add_child(focus_layer)
 
-func register_focus_area(area: Area2D) -> FocusControl:
-	return focus_layer.create_focus_control(area)
-
+func register_focus(target: AccessibleModule) -> FocusControl:
+	return focus_layer.create_focus_control(target)
 
 func _enter_tree() -> void:
-	#get_tree().node_added.connect(handle_aria_injector)
 	setup_focus_layer()
+	focus_manager = FocusManager.new(get_tree(), get_viewport())
 
-#func handle_aria_injector(n):
-#	print(n)
+func _notification(what: int):
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
+		debug_log("canvas: focus")
+		if aria_proxy:
+			focus_manager.scan_focus_list()
+			match (aria_proxy.focus_enter_type):
+				"PREV":
+					if !focus_manager.viewport.gui_get_focus_owner():
+						if !focus_manager.focus_list.is_empty():
+							focus_manager.focus_list[focus_manager.focus_list.size()-1].grab_focus()
+				_:
+					if !focus_manager.viewport.gui_get_focus_owner():
+						if !focus_manager.focus_list.is_empty():
+							focus_manager.focus_list[0].grab_focus()
+					
+func _input(event: InputEvent) -> void:
+	# Prevent default behavior
+	if event.is_action_pressed("ui_focus_prev", true):
+		if !focus_manager.trap_prev_focus:
+			get_viewport().set_input_as_handled()
+			get_viewport().gui_release_focus()
 	
+	elif !focus_manager.trap_next_focus and event.is_action_pressed("ui_focus_next", true):
+		get_viewport().set_input_as_handled()
+		get_viewport().gui_release_focus()
+
 func _ready() -> void:
 	if !OS.has_feature("web"):
 		push_error("Addon only available for web platform.")
 		return
-	
+		
 	if aria_proxy == null:
 		printerr("Aria proxy not found. Make sure is a valid property of the JavaScript window")
 		return
-	
+		
 	debug_log("Godot-aria: ARIA proxy loaded.")
-
-
+	
+	# Register focus handler
 
 func debug_log(message):
 	if debug: print_debug(message)
 
+func handle_tree_changed():
+	pass
+	
 func parse_message(message, values):
 	var parsed = GODOT_ARIA_UTILS.parse_message(message, values)
 	var result = parsed.text
@@ -70,14 +96,22 @@ func parse_message(message, values):
 	last_message = result
 	last_message_raw = message
 	return result
+
+func focus_canvas() -> void:
+	if OS.has_feature("web") and aria_proxy != null:
+		aria_proxy.focus_canvas()
+
+func unfocus_canvas() -> void:
+	if OS.has_feature("web") and aria_proxy != null:
+		aria_proxy.unfocus_canvas()
 	
-func notify_screen_reader(message, dynamic_values = {}):
+func notify_screen_reader(message, dynamic_values = {}) -> void:
 	var format_message = parse_message(message, dynamic_values)
 	if OS.has_feature("web") and aria_proxy != null and native_screen_reader:
 		debug_log("Speak: " + format_message)
 		aria_proxy.update_aria_region(format_message)
 	
-func alert_screen_reader(message, dynamic_values = {}):
+func alert_screen_reader(message, dynamic_values = {}) -> void:
 	var format_message = parse_message(message, dynamic_values)
 	if OS.has_feature("web") and aria_proxy != null and native_screen_reader:
 		debug_log("Alert: " + str(message))

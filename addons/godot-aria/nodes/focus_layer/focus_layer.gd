@@ -7,29 +7,17 @@ func _ready() -> void:
 
 func handle_focus_changed(focus_control: Control) -> void:
 	if focus_control is FocusControl:
-		var aria_label = focus_control.area_target.aria_label
+		var aria_label = focus_control.target.aria_label
 		GodotARIA.notify_screen_reader(aria_label)
-		
-func create_focus_control(area: AreaFocus2D) -> FocusControl:
+
+func create_focus_control(target:  AccessibleModule) -> FocusControl:
 	var focus_control : FocusControl = focus_control_node.instantiate()
-	var size = null
-	var prev_rect = null
-	for owner_id : int in area.get_shape_owners():
-		var shape : Shape2D = area.shape_owner_get_shape(owner_id, 0)
-		var rect = shape.get_rect()
-		if !size:
-			size = rect.size
-			prev_rect = rect
-		else:
-			size = prev_rect.size
-			prev_rect = prev_rect.merge(rect)
-			
-	focus_control.size = size
-	focus_control.area_target = area
-	focus_control.global_position = area.global_position - size * 0.5
-	focus_control.focus_mode = area.focus_mode
-	if area.focus_style:
-		focus_control.add_theme_stylebox_override("focus", area.focus_style)
+	var target_parent = target.get_parent()
+	focus_control.size = target.focus_size
+	focus_control.target = target
+	focus_control.global_position = target_parent.global_position - focus_control.size * 0.5
+	focus_control.focus_mode = target.focus_mode
+	if target.focus_style:
+		focus_control.add_theme_stylebox_override("focus", target.focus_style)
 	$MainContainer.add_child(focus_control)
 	return focus_control
-	
