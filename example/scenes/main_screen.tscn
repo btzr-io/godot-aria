@@ -28,3 +28,23 @@ text = "one"
 layout_mode = 2
 text = "two
 "
+
+[node name="Button3" type="Button" parent="Layout"]
+layout_mode = 2
+text = "Three"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+focus_mode = 2
+
+[node name="Button" type="Button" parent="Layout/HBoxContainer"]
+layout_mode = 2
+text = "a"
+
+[node name="Button2" type="Button" parent="Layout/HBoxContainer"]
+layout_mode = 2
+text = "b"
+
+[node name="Button3" type="Button" parent="Layout/HBoxContainer"]
+layout_mode = 2
+text = "c"

@@ -107,7 +107,8 @@ const ARIA_PROXY = class {
 	constructor() {
 		this.trap_next_focus = false;
 		this.trap_prev_focus = false;
-		this.focus_enter_type = 'NEXT';
+		this.force_focus_trap = false;
+		this.focus_enter_position = '';
 	}
 	focus_canvas() {
 		window.canvas.focus();
@@ -127,13 +128,15 @@ const ARIA_PROXY = class {
 		region.textContent = message;
 	}
 	is_focus_trap(evt) {
+		if (this.force_focus_trap) {
+			return true
+		}
 		if (evt.key == 'Tab' && evt.shiftKey && this.trap_prev_focus) {
 			return true;
 		}
 		 if (evt.key == 'Tab' && !evt.shiftKey && this.trap_next_focus) {
 				 return true;
 		}
-
 		return evt.key.startsWith('Arrow');
 	}
 };
@@ -152,7 +155,7 @@ function toggleFocusRedirect(active) {
 
 window.canvas.addEventListener('click', () => {
 	if (window.GODOT_ARIA_PROXY) {
-		GODOT_ARIA_PROXY.focus_enter_type = "CLICK"
+		GODOT_ARIA_PROXY.focus_enter_position = ''
 	}
 })
 
@@ -164,13 +167,13 @@ window.canvas.addEventListener('focusout', () => {
 	toggleFocusRedirect(true);
 	if (window.GODOT_ARIA_PROXY) {
 		window.GODOT_ARIA_PROXY.update_aria_region('');
-		window.GODOT_ARIA_PROXY.focus_enter_type = '';
+		window.GODOT_ARIA_PROXY.focus_enter_position = '';
 	}
 })
 
 next_focus_redirect.addEventListener('focus', (e) => {
 	if (window.GODOT_ARIA_PROXY) {
-		window.GODOT_ARIA_PROXY.focus_enter_type = 'NEXT';
+		window.GODOT_ARIA_PROXY.focus_enter_position = 'START';
 	}
 	e.preventDefault();
 	window.canvas.focus();
@@ -178,7 +181,7 @@ next_focus_redirect.addEventListener('focus', (e) => {
 
 prev_focus_redirect.addEventListener('focus', (e) => {
 	if (window.GODOT_ARIA_PROXY) {
-		window.GODOT_ARIA_PROXY.focus_enter_type = 'PREV';
+		window.GODOT_ARIA_PROXY.focus_enter_position = 'END';
 	}
 	e.preventDefault();
 	window.canvas.focus();

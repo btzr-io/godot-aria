@@ -7,11 +7,6 @@ var aria_proxy : JavaScriptObject = JavaScriptBridge.get_interface("GODOT_ARIA_P
 # Print debug messages
 var debug: bool = true
 
-# Default to true for native screen reader usage:
-# Set to false if you are using a custom TTS
-var native_screen_reader = true
-var allow_repetition = true
-
 # Cahce to detect updates
 var last_values = {}
 var last_message = ""
@@ -36,28 +31,30 @@ func _enter_tree() -> void:
 func _notification(what: int):
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
 		debug_log("canvas: focus")
-		if aria_proxy:
-			focus_manager.scan_focus_list()
-			match (aria_proxy.focus_enter_type):
-				"PREV":
-					if !focus_manager.viewport.gui_get_focus_owner():
-						if !focus_manager.focus_list.is_empty():
-							focus_manager.focus_list[focus_manager.focus_list.size()-1].grab_focus()
-				_:
-					if !focus_manager.viewport.gui_get_focus_owner():
-						if !focus_manager.focus_list.is_empty():
-							focus_manager.focus_list[0].grab_focus()
-					
+		if aria_proxy and !focus_manager.has_focus():
+			focus_manager.trap_focus()
+			focus_manager.restore_focus(aria_proxy.focus_enter_position)
+		
 func _input(event: InputEvent) -> void:
-	# Prevent default behavior
 	if event.is_action_pressed("ui_focus_prev", true):
+		if !focus_manager.has_focus():
+			focus_manager.restore_focus("END")
+			# Prevent default behavior
+			get_viewport().set_input_as_handled()
+			return
 		if !focus_manager.trap_prev_focus:
+			# Prevent default behavior
 			get_viewport().set_input_as_handled()
 			get_viewport().gui_release_focus()
 	
-	elif !focus_manager.trap_next_focus and event.is_action_pressed("ui_focus_next", true):
-		get_viewport().set_input_as_handled()
-		get_viewport().gui_release_focus()
+	elif event.is_action_pressed("ui_focus_next", true):
+		if !focus_manager.has_focus():
+			focus_manager.restore_focus("START")
+			get_viewport().set_input_as_handled()
+			return
+		if !focus_manager.trap_next_focus:
+			get_viewport().set_input_as_handled()
+			get_viewport().gui_release_focus()
 
 func _ready() -> void:
 	if !OS.has_feature("web"):
@@ -70,13 +67,8 @@ func _ready() -> void:
 		
 	debug_log("Godot-aria: ARIA proxy loaded.")
 	
-	# Register focus handler
-
 func debug_log(message):
 	if debug: print_debug(message)
-
-func handle_tree_changed():
-	pass
 	
 func parse_message(message, values):
 	var parsed = GODOT_ARIA_UTILS.parse_message(message, values)
@@ -107,12 +99,12 @@ func unfocus_canvas() -> void:
 	
 func notify_screen_reader(message, dynamic_values = {}) -> void:
 	var format_message = parse_message(message, dynamic_values)
-	if OS.has_feature("web") and aria_proxy != null and native_screen_reader:
+	if OS.has_feature("web") and aria_proxy != null:
 		debug_log("Speak: " + format_message)
 		aria_proxy.update_aria_region(format_message)
 	
 func alert_screen_reader(message, dynamic_values = {}) -> void:
 	var format_message = parse_message(message, dynamic_values)
-	if OS.has_feature("web") and aria_proxy != null and native_screen_reader:
+	if OS.has_feature("web") and aria_proxy != null:
 		debug_log("Alert: " + str(message))
 		aria_proxy.update_aria_region(format_message, "assertive")

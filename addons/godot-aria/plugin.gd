@@ -27,8 +27,6 @@ class WebExportPlugin extends EditorExportPlugin:
 	var export_path : String
 	var export_debug : bool
 	
-	
-	
 	# Specifies which platform is supported by the plugin.
 	func _supports_platform(platform):
 		if platform is EditorExportPlatformWeb:
@@ -46,13 +44,13 @@ class WebExportPlugin extends EditorExportPlugin:
 		# Exported with debug:
 		if !FileAccess.file_exists(engine_js):
 			engine_js = export_path + "/" + "index.js"
-		# Remove focus trap on web export
+		# Remove permanent focus trap on web export
 		if FileAccess.file_exists(engine_js):
 			var file = FileAccess.open(engine_js, FileAccess.READ_WRITE)
 			var data = file.get_as_text()
-			var fixed = data.replace("func(pressed,evt.repeat,modifiers);evt.preventDefault()", "func(pressed,evt.repeat,modifiers);if(window.GODOT_ARIA_PROXY.is_focus_trap(evt)){evt.preventDefault();}")
+			var update = data.replace("func(pressed,evt.repeat,modifiers);evt.preventDefault()", "func(pressed,evt.repeat,modifiers);if(window.GODOT_ARIA_PROXY.is_focus_trap(evt)){evt.preventDefault();}")
 			file.resize(0)
-			file.store_string(fixed)
+			file.store_string(update)
 			file.close()
 		
 	# Return the plugin's name.
