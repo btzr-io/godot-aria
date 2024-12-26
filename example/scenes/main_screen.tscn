@@ -27,6 +27,7 @@ text = "one"
 
 [node name="Button2" type="Button" parent="Layout"]
 layout_mode = 2
+disabled = true
 text = "two
 "
 
