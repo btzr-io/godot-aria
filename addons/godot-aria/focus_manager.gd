@@ -73,5 +73,6 @@ func handle_focus_changed(control: Control):
 	else:
 		trap_prev_focus = false
 		trap_next_focus = false
+		
 	if GodotARIA.aria_proxy:
 		GodotARIA.aria_proxy.update_trap_focus(trap_prev_focus, trap_next_focus)

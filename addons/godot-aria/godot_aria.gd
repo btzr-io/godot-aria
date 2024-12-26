@@ -70,21 +70,8 @@ func _ready() -> void:
 func debug_log(message):
 	if debug: print_debug(message)
 	
-func parse_message(message, values):
-	var parsed = GODOT_ARIA_UTILS.parse_message(message, values)
-	var result = parsed.text
-	if !values.is_empty():
-		result = parsed.formated
-		# Check for changes only
-		var changes = []
-		for value_name in parsed.values:
-			if last_values.has(value_name) and values[value_name] != last_values[value_name]:
-				changes.push_back(values[value_name])
-		# Read changes instead of full message:
-		if !changes.is_empty():
-			result = ", ".join(changes)
-	# Update cache
-	last_values = values.duplicate()
+func parse_message(message):
+	var result : String = str(message)
 	last_message = result
 	last_message_raw = message
 	return result
@@ -97,14 +84,14 @@ func unfocus_canvas() -> void:
 	if OS.has_feature("web") and aria_proxy != null:
 		aria_proxy.unfocus_canvas()
 	
-func notify_screen_reader(message, dynamic_values = {}) -> void:
-	var format_message = parse_message(message, dynamic_values)
+func notify_screen_reader(message) -> void:
+	var format_message = parse_message(message)
 	if OS.has_feature("web") and aria_proxy != null:
 		debug_log("Speak: " + format_message)
 		aria_proxy.update_aria_region(format_message)
 	
-func alert_screen_reader(message, dynamic_values = {}) -> void:
-	var format_message = parse_message(message, dynamic_values)
+func alert_screen_reader(message) -> void:
+	var format_message = parse_message(message)
 	if OS.has_feature("web") and aria_proxy != null:
 		debug_log("Alert: " + str(message))
 		aria_proxy.update_aria_region(format_message, "assertive")
