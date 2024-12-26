@@ -8,7 +8,6 @@ var aria_proxy : JavaScriptObject = JavaScriptBridge.get_interface("GODOT_ARIA_P
 var debug: bool = true
 
 # Cahce to detect updates
-var last_values = {}
 var last_message = ""
 var last_message_raw = ""
 
