@@ -56,6 +56,8 @@ func restore_focus(focus_position: String = "FIRST"):
 
 func trap_focus():
 	if GodotARIA.aria_proxy:
+		trap_next_focus = true
+		trap_prev_focus = true
 		GodotARIA.aria_proxy.update_trap_focus(true, true)
 
 func handle_focus_changed(control: Control):
@@ -66,8 +68,8 @@ func handle_focus_changed(control: Control):
 	
 	# Prevent focus trap
 	if !focus_list.is_empty():
-		trap_prev_focus = prev_focus != focus_list[focus_list.size()- 1]
-		trap_next_focus = next_focus != focus_list[0]
+		trap_prev_focus = !control.focus_previous.is_empty() or prev_focus != focus_list[focus_list.size() - 1]
+		trap_next_focus = !control.focus_next.is_empty() or next_focus != focus_list[0]
 	else:
 		trap_prev_focus = false
 		trap_next_focus = false

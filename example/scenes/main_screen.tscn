@@ -20,8 +20,9 @@ text = "This plugin is compatible with your current  screen reader and web brows
 autowrap_mode = 2
 script = ExtResource("1_3l7dk")
 
-[node name="Button" type="Button" parent="Layout"]
+[node name="Button_first" type="Button" parent="Layout"]
 layout_mode = 2
+focus_previous = NodePath("../Button3")
 text = "one"
 
 [node name="Button2" type="Button" parent="Layout"]
@@ -31,6 +32,7 @@ text = "two
 
 [node name="Button3" type="Button" parent="Layout"]
 layout_mode = 2
+focus_next = NodePath("../Button_first")
 text = "Three"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Layout"]
@@ -45,6 +47,6 @@ text = "a"
 layout_mode = 2
 text = "b"
 
-[node name="Button3" type="Button" parent="Layout/HBoxContainer"]
+[node name="Button_last" type="Button" parent="Layout/HBoxContainer"]
 layout_mode = 2
 text = "c"
