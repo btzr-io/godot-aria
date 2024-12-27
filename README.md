@@ -89,8 +89,8 @@ Reference of the overlay control that manages the focus behavior, use this prope
 
 ### Methods
 
-#### grab_focus
+#### grab_focus() -> void
 Focus the overlay control.
 
-#### has_focus
+#### has_focus() -> bool
 Checks if the overlay control has focus.
