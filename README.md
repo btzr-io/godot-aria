@@ -10,9 +10,8 @@ For more information about screen readers and browsers compatibility please see:
 ### Features
 - Accessible html page template.
 - Notifiy changes or important alerts to screen readers.
-- Restore or gain focus with TAB / TAB SHIFT navigation.
+- Restore or gain focus with tab / shift + tab navigation.
 - Focus can leave the canvas element to navigate other content on the web page.
-
 
 ## Installation
 Just add the addons folder to your project and enable the plugin.
@@ -23,16 +22,33 @@ See: [Installing a plugin](https://docs.godotengine.org/en/stable/tutorials/plug
 > [!warning]
 > The default godot web export HTML page has accessibility [issues](https://github.com/btzr-io/godot-aria/issues/4) and is not compatible with this pluign.
 
-This repository provides a more accessible version that can serve as a starting point: [godot_aria_shell.html](https://github.com/btzr-io/godot-aria/blob/main/addons/godot-aria/godot_aria_shell.html)
+Before you can use this addon you need to make some quick changes to the export settings:
 
+- This repository provides a more accessible HTML page that can serve as a starting point: [godot_aria_shell.html](https://github.com/btzr-io/godot-aria/blob/main/addons/godot-aria/godot_aria_shell.html)
+
+- Auto focus behavior is not recommended, the user should decide when to enter focus ( click or tab navigation ).
+  
 ```shell
 Export > html/custom_html_shell: "res://addons/godot-aria/godot_aria_shell.html"
+Export > html/focus_canvas_on_start: false
 ```
 
 See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tutorials/platform/web/customizing_html5_shell.html#custom-html-page-for-web-export)
 
 ## Usage
-Global class `GodotARIA` provides a way to send notifications and alerts to screen readers as [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live) updates.
+Global class `GodotARIA` provides methods to manage focus for the html canvas element and a way to send notifications or alerts to screen readers as [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live) updates.
+
+### GodotARIA.focus_canvas
+Focus the current canvas element.
+```py
+  GodotARIA.focus_canvas()
+```
+
+### GodotARIA.unfocus_canvas
+Remove focus of the current canvas element.
+```py
+  GodotARIA.unfocus_canvas()
+```
 
 ### GodotARIA.notify_screen_reader
 Awaits for a natural pause before speaking up. It won’t interrupt what the screen reader is currently announcing. Equivalent to aria-live [polite](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#polite).
