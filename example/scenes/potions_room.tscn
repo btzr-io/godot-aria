@@ -305,7 +305,6 @@ sprite_frames = SubResource("SpriteFrames_1tdxn")
 
 [node name="AccessibleModule" type="Node" parent="PotionSprite"]
 script = ExtResource("5_lfd41")
-auto_focus = true
 focus_size = Vector2(192, 192)
 focus_style = SubResource("StyleBoxFlat_d2eqv")
 
@@ -315,7 +314,7 @@ position = Vector2(245, 435)
 scale = Vector2(12, 12)
 sprite_frames = SubResource("SpriteFrames_1tdxn")
 
-[node name="AccessibleModule" type="Node" parent="PotionSprite2"]
+[node name="AccessibleModule2" type="Node" parent="PotionSprite2"]
 script = ExtResource("5_lfd41")
 focus_size = Vector2(192, 192)
 focus_style = SubResource("StyleBoxFlat_xco4u")

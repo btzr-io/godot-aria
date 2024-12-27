@@ -22,32 +22,13 @@ script = ExtResource("1_3l7dk")
 
 [node name="Button_first" type="Button" parent="Layout"]
 layout_mode = 2
-focus_previous = NodePath("../Button3")
 text = "one"
 
 [node name="Button2" type="Button" parent="Layout"]
 layout_mode = 2
-disabled = true
 text = "two
 "
 
 [node name="Button3" type="Button" parent="Layout"]
 layout_mode = 2
-focus_next = NodePath("../Button_first")
 text = "Three"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Layout"]
-layout_mode = 2
-focus_mode = 2
-
-[node name="Button" type="Button" parent="Layout/HBoxContainer"]
-layout_mode = 2
-text = "a"
-
-[node name="Button2" type="Button" parent="Layout/HBoxContainer"]
-layout_mode = 2
-text = "b"
-
-[node name="Button_last" type="Button" parent="Layout/HBoxContainer"]
-layout_mode = 2
-text = "c"

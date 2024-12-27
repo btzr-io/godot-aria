@@ -9,10 +9,10 @@ func _ready() -> void:
 	
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("Read"):
-		read_instructions()
+		get_tree().reload_current_scene()
 		
 func _notification(what: int):
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
 		var focus_control = get_viewport().gui_get_focus_owner()
 		if focus_control:
-			GodotARIA.notify_screen_reader("Potions room: " + focus_control.area_target.aria_label)
+			GodotARIA.notify_screen_reader("Potions room: " + focus_control.target.aria_label)

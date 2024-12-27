@@ -18,9 +18,11 @@ var focus_manager : FocusManager
 
 func setup_focus_layer():
 	focus_layer = focus_layer_scene.instantiate()
-	add_child(focus_layer)
+	get_tree().current_scene.call_deferred("add_child", focus_layer)
 
 func register_focus(target: AccessibleModule) -> FocusControl:
+	if !is_instance_valid(focus_layer):
+		setup_focus_layer()
 	return focus_layer.create_focus_control(target)
 
 func _enter_tree() -> void:

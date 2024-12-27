@@ -10,8 +10,6 @@ func _ready() -> void:
 	if target:
 		target_parent = target.get_parent()
 		target.tree_exited.connect(handle_remove)
-		if target.auto_focus:
-			grab_focus()
 
 func handle_remove():
 	queue_free()

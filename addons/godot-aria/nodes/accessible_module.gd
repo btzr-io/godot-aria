@@ -12,7 +12,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 		return []
 	return ["Use only for Node2D and inherited types."]
 
-@export var auto_focus : bool = false
+# @export var auto_focus : bool = false
 
 @export var focus_mode : Control.FocusMode = Control.FOCUS_ALL :
 	set(value):

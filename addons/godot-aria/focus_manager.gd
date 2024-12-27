@@ -18,20 +18,19 @@ func _init(current_tree, current_viewport)  -> void:
 	tree = current_tree
 	viewport = current_viewport
 	viewport.gui_focus_changed.connect(self.handle_focus_changed)
-	focus_root = tree.current_scene
 
 func has_focus():
 	return viewport.gui_get_focus_owner() != null
 	
 func scan_focus_list():
 	focus_list.clear()
-	GODOT_ARIA_UTILS.get_focusable_controls(focus_root, 0, focus_list)
+	GODOT_ARIA_UTILS.get_focusable_controls(tree.current_scene, 0, focus_list)
 	
-func find_autofocus_list():
+func find_auto_focus_list():
 	return focus_list.filter(
 		func(item: Control) -> bool:
-			if "autofocus" in item:
-				return item.autofocus
+			if "auto_focus" in item:
+				return item.auto_focus
 			return false
 	)
 

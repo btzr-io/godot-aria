@@ -9,5 +9,5 @@ static func get_focusable_controls(node: Node, level: int = 0, list = []):
 			if child.is_visible_in_tree() and child.focus_mode == Control.FocusMode.FOCUS_ALL:
 				# print(".".repeat(_level) + child.name)
 				list.push_back(child)
-			if child.get_child_count() > 0:
-				get_focusable_controls(child, _level + 1, list)
+		if child.get_child_count() > 0:
+			get_focusable_controls(child, _level + 1, list)
