@@ -63,7 +63,7 @@ Speak an alert, interrupts whatever the screen reader is currently announcing. E
 ```
 
 ## Accessibiltiy module for Node2D
-To make any Node2D accessible you can add the custom node AccessibleModule as a direct child.
+To make any Node2D accessible you can add the custom node AccessibleModule as a direct child, this will create an overlay control to handle the focus behavior.
 
 ### Features
 - Add focus behavior.
@@ -73,11 +73,24 @@ To make any Node2D accessible you can add the custom node AccessibleModule as a 
 
 ### Properties
 #### aria_label : String
-#### auto_focus : bool
+Name or description to be anounced by screen readers.
+
 #### focus_mode : Control.FocusMode
+Focus mode of the overlay control: None, Click, All.
+
 #### focus_size : Vector2
+The focusable area size, calculated by default if the node has a visible texture or rect.
+
 #### focus_style : StyleBox
+Add a custom style if needed, otherwise you can use has_focus() and apply a custom focus indicator on the node.
+
+#### focus_control
+Reference of the overlay control that manages the focus behavior, use this property to interact directly with the overlay control.
 
 ### Methods
+
 #### grab_focus
+Focus the overlay control.
+
 #### has_focus
+Checks if the overlay control has focus.
