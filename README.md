@@ -12,6 +12,7 @@ For more information about screen readers and browsers compatibility please see:
 - Notifiy changes or important alerts to screen readers.
 - Restore or gain focus with tab / shift + tab navigation.
 - Focus can leave the canvas element to navigate other content on the web page.
+- Accessibility module for Node2D.
 
 ## Installation
 Just add the addons folder to your project and enable the plugin.
@@ -37,7 +38,6 @@ See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tu
 
 ## Usage
 Global class `GodotARIA` provides methods to manage focus for the html canvas element and a way to send notifications or alerts to screen readers as [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live) updates.
-
 ### GodotARIA.focus_canvas
 Focus the current canvas element.
 ```py
@@ -61,3 +61,23 @@ Speak an alert, interrupts whatever the screen reader is currently announcing. E
 ```py
   GodotARIA.alert_screen_reader(message: String)
 ```
+
+## Accessibiltiy module for Node2D
+To make any Node2D accessible you can add the custom node AccessibleModule as a direct child.
+
+### Features
+- Add focus behavior.
+- Custom focus style.
+- Tab navigation between other focusable elements.
+- Notify name or description to screen readers on focus.
+
+### Properties
+#### aria_label : String
+#### auto_focus : bool
+#### focus_mode : Control.FocusMode
+#### focus_size : Vector2
+#### focus_style : StyleBox
+
+### Methods
+#### grab_focus
+#### has_focus
