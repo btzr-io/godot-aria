@@ -84,7 +84,7 @@ The focusable area size, calculated by default if the node has a visible texture
 #### focus_style : StyleBox
 Add a custom style if needed, otherwise you can use has_focus() and apply a custom focus indicator on the node.
 
-#### focus_control
+#### focus_control : FocusControl
 Reference of the overlay control that manages the focus behavior, use this property to interact directly with the overlay control.
 
 ### Methods
