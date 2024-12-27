@@ -1,34 +1,38 @@
 > [!note]
 > Experimental plugin, feel free to contribute or report any issues to improve compatibility with more web browsers and screen readers.
+
 # Godot-ARIA
 A plugin for creating accessible rich internet applications with godot.
 
-Screen Reader | Browsers | Compatibility
-| --- | --- | --- |
-| NVDA | Firefox, Chrome, Edge | Yes
+For more information about screen readers and browsers compatibility please see: [current live region behaviour](https://tetralogical.com/blog/2024/05/01/why-are-my-live-regions-not-working/#current-live-region-behaviour).
 
 
-For information about other screen readers or browsers, please see: [current live region behaviour](https://tetralogical.com/blog/2024/05/01/why-are-my-live-regions-not-working/#current-live-region-behaviour).
+### Features
+- Accessible html page template.
+- Notifiy changes or important alerts to screen readers.
+- Restore or gain focus with TAB / TAB SHIFT navigation.
+- Focus can leave the canvas element to navigate other content on the web page.
+
 
 ## Installation
 Just add the addons folder to your project and enable the plugin.
 
 See: [Installing a plugin](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html#installing-a-plugin)
 
-## Custom html page
+## Export configuration
 > [!warning]
 > The default godot web export HTML page has accessibility [issues](https://github.com/btzr-io/godot-aria/issues/4) and is not compatible with this pluign.
 
 This repository provides a more accessible version that can serve as a starting point: [godot_aria_shell.html](https://github.com/btzr-io/godot-aria/blob/main/addons/godot-aria/godot_aria_shell.html)
 
 ```shell
-Export > html/custom_html_shell = "res://addons/godot-aria/godot_aria_shell.html"
+Export > html/custom_html_shell: "res://addons/godot-aria/godot_aria_shell.html"
 ```
 
 See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tutorials/platform/web/customizing_html5_shell.html#custom-html-page-for-web-export)
 
 ## Usage
-Global class `GodotARIA` provides a way to send messages and alerts to screen readers as [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live) updates.
+Global class `GodotARIA` provides a way to send notifications and alerts to screen readers as [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live) updates.
 
 ### GodotARIA.notify_screen_reader
 Awaits for a natural pause before speaking up. It won’t interrupt what the screen reader is currently announcing. Equivalent to aria-live [polite](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#polite).
