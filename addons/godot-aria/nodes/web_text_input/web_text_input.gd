@@ -1,12 +1,11 @@
-
 @tool
 @icon('./icon.svg')
 extends PanelContainer
 class_name WebTextInput
 
-## Hybrid control that renders a native html input element on top of the godot canvas.
+## Hybrid control that renders a native <input> element on top of the godot canvas.
 ##
-## Transform is synced to css transform.
+## The global transform and modulate alpha is synced to css transform and opacity.
 ## @experimental
 
 var content_scene = preload("./content.tscn")
@@ -17,23 +16,25 @@ signal on_change
 const INPUT_TYPES = "text,email,date,date-local,month,number,password,tel,time,search,url,week"
 const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
 
-## The id global attribute defines an identifier (ID) which must be unique in the whole document.
+## The id global attribute defines an identifier (ID) for the <input> element which must be unique in the whole document.
 @export var id  : String
-
-## A string specifying the type of html control to render.
+## A string specifying the type of <input> element to render.
 @export_custom(PROPERTY_HINT_ENUM, INPUT_TYPES) var type: String = "text"
-
 ## Provides a hint to browsers as to the type of virtual keyboard configuration to use when editing this element or its contents.
 @export_custom(PROPERTY_HINT_ENUM, INPUT_MODES) var input_mode : String
-
+## A string containing the value of the <input> element, or the empty string if the input element has no value set.
 @export var value : String = ""
+## Text that appears when the <input> element has no value set
 @export var placeholder : String = "Placeholder text"
+## Attribute to provide an accessible name for the <input> element
 @export var aria_label : String
+## Hint for form autofill feature
 @export var auto_complete : String
+## Maximum length (number of characters) of value
 @export_range(0, 524288, 1,"or_great") var max_length : int = 0
+## Attribute that defines whether the <input> element may be checked for spelling errors.
 @export var spell_check : bool = false
-## The autocomplete attribute provides a hint to the user agent specifying how to, or indeed whether to, prefill a form control.
-
+## Boolean attribute, when present, the user can neither edit nor focus on <input> element.
 @export var disabled: bool = false :
 	set(value):
 		disabled = value
