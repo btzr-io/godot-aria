@@ -274,7 +274,7 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color(1.92523e-06, 0.753204, 0.431352, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vjrfj"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8eeng"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqycw"]
 content_margin_left = 16.0
@@ -469,7 +469,7 @@ clip_contents = true
 custom_minimum_size = Vector2(100, 24)
 layout_mode = 2
 focus_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_vjrfj")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8eeng")
 script = ExtResource("4_wq40o")
 id = "text-1"
 disabled_style = SubResource("StyleBoxFlat_wqycw")

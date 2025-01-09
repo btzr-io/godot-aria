@@ -75,7 +75,6 @@ const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
 
 var box : PanelContainer
 var overlay_target : Label
-
 var input_ref : GodotARIA.HTML_REF
 
 # Events callbacks
@@ -84,8 +83,7 @@ var html_change_cb = JavaScriptBridge.create_callback(handle_html_change)
 var html_focus_cb = JavaScriptBridge.create_callback(handle_html_focus)
 var html_focusout_cb = JavaScriptBridge.create_callback(handle_html_focusout)
 var html_keydown_cb = JavaScriptBridge.create_callback(handle_html_keydown)
-
-# Cache
+# Cache transforms
 var element_transform : Dictionary
 var prev_element_transform : Dictionary = {}
 
@@ -104,7 +102,7 @@ func set_css_property(property_name, property_value):
 		if formated is Color:
 			formated = GODOT_ARIA_UTILS.to_css_color(formated)
 		input_ref.element.style.setProperty(property_name, formated)
-		
+
 func _enter_tree() -> void:
 	# Don't render for non web builds
 	if !Engine.is_editor_hint() and !OS.has_feature("web"):
@@ -126,8 +124,10 @@ func _enter_tree() -> void:
 	
 	if GODOT_ARIA_UTILS.is_web():
 		set_notify_transform(true)
+		visibility_changed.connect(handle_visibility)
 		focus_entered.connect(handle_focus)
 		focus_exited.connect(handle_blur)
+		# Initial value for element attributes
 		var init_props = {
 			'type': type,
 			'value': value,
@@ -142,22 +142,27 @@ func _enter_tree() -> void:
 			
 		if auto_complete:
 			init_props['autocomplete'] = auto_complete
-		
+		# Html element reference
 		input_ref = GodotARIA.HTML_REF.new(id, "input", init_props)
 		input_ref.element.addEventListener("focus", html_focus_cb)
 		input_ref.element.addEventListener("focusout", html_focusout_cb)
 		input_ref.element.addEventListener("input", html_input_cb)
 		input_ref.element.addEventListener("change", html_change_cb)
 		input_ref.element.addEventListener("keydown", html_keydown_cb)
+		# Initial visibility
+		handle_visibility()
 		
 func update_style_colors() -> void:
 	if !input_ref or !input_ref.element: return
 	var prop_colors = ['text_color', 'placeholder_color', 'selection_color', 'selection_text_color']
 	for prop_name in prop_colors:
 		var prop_value : Color = self[prop_name]
-		if prop_value:
-			set_css_property("--" + prop_name, prop_value)
+		if prop_value: set_css_property("--" + prop_name, prop_value)
 		
+func handle_visibility():
+	var is_visible: bool = is_visible_in_tree()
+	input_ref.update_style({'display': 'block' if is_visible else 'none'})
+	
 func handle_focus() -> void:
 	if disabled: return
 	set_style(focus_style)
@@ -205,9 +210,7 @@ func force_redraw():
 		queue_redraw()
 		
 func _draw() -> void:
-	if !GODOT_ARIA_UTILS.is_web(): return
-	if !element_transform: return
-	
+	if !GODOT_ARIA_UTILS.is_web() or !element_transform: return
 	GodotARIA.aria_proxy.redraw_element(
 		id,
 		element_transform.width, 
