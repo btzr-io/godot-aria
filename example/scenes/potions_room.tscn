@@ -1,7 +1,8 @@
-[gd_scene load_steps=43 format=3 uid="uid://cueed75lkevmp"]
+[gd_scene load_steps=50 format=3 uid="uid://cueed75lkevmp"]
 
 [ext_resource type="Script" path="res://example/scripts/potions_room.gd" id="1_avcxw"]
 [ext_resource type="Texture2D" uid="uid://c442j7wtbydj8" path="res://example/assets/potion_tileset.png" id="2_t27pg"]
+[ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="4_wq40o"]
 [ext_resource type="Script" path="res://addons/godot-aria/nodes/accessible_module.gd" id="5_lfd41"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_q4f02"]
@@ -273,14 +274,161 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color(1.92523e-06, 0.753204, 0.431352, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xco4u"]
-bg_color = Color(0, 0, 0, 0)
-draw_center = false
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(1.92523e-06, 0.753204, 0.431352, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vjrfj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqycw"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.176471, 0.176471, 0.176471, 0.588235)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qpov5"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ablbd"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="Animation" id="Animation_78wwx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VBoxContainer:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(28, 43)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("VBoxContainer:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("VBoxContainer:modulate")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("VBoxContainer:rotation")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_oo6s8"]
+resource_name = "new_animation"
+length = 3.0
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VBoxContainer:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(28, 43), Vector2(400, 300)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("VBoxContainer:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.5, 1.5)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("VBoxContainer:modulate")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.166667, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("VBoxContainer:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.6, 2.26667, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.378736, -0.631809, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rstnj"]
+_data = {
+"RESET": SubResource("Animation_78wwx"),
+"new_animation": SubResource("Animation_oo6s8")
+}
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_avcxw")
@@ -299,7 +447,7 @@ autowrap_mode = 2
 
 [node name="PotionSprite" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-position = Vector2(240, 228)
+position = Vector2(618, 198)
 scale = Vector2(12, 12)
 sprite_frames = SubResource("SpriteFrames_1tdxn")
 
@@ -308,13 +456,27 @@ script = ExtResource("5_lfd41")
 focus_size = Vector2(192, 192)
 focus_style = SubResource("StyleBoxFlat_d2eqv")
 
-[node name="PotionSprite2" type="AnimatedSprite2D" parent="."]
-texture_filter = 1
-position = Vector2(245, 435)
-scale = Vector2(12, 12)
-sprite_frames = SubResource("SpriteFrames_1tdxn")
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 28.0
+offset_top = 43.0
+offset_right = 222.0
+offset_bottom = 369.0
+pivot_offset = Vector2(97, 133)
+theme_override_constants/separation = 20
 
-[node name="AccessibleModule2" type="Node" parent="PotionSprite2"]
-script = ExtResource("5_lfd41")
-focus_size = Vector2(192, 192)
-focus_style = SubResource("StyleBoxFlat_xco4u")
+[node name="WebTextInput" type="PanelContainer" parent="VBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(100, 24)
+layout_mode = 2
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_vjrfj")
+script = ExtResource("4_wq40o")
+id = "text-1"
+disabled_style = SubResource("StyleBoxFlat_wqycw")
+focus_style = SubResource("StyleBoxFlat_qpov5")
+normal_style = SubResource("StyleBoxFlat_ablbd")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_rstnj")
+}

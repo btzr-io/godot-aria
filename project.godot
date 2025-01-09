@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GodotARIA="*res://addons/godot-aria/godot_aria.gd"
+GodotARIA="*res://addons/godot-aria/./godot_aria.gd"
 
 [display]
 

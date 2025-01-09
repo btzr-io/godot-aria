@@ -3,14 +3,17 @@ extends CanvasLayer
 var focus_control_node = preload("../focus_control/node.tscn")
 
 func _ready() -> void:
+	if !OS.has_feature("web"): return
 	get_viewport().gui_focus_changed.connect(handle_focus_changed)
 
 func handle_focus_changed(focus_control: Control) -> void:
+	if !OS.has_feature("web"): return
 	if focus_control is FocusControl:
 		var aria_label = focus_control.target.aria_label
 		GodotARIA.notify_screen_reader(aria_label)
 
 func create_focus_control(target:  AccessibleModule) -> FocusControl:
+	if !OS.has_feature("web"): return
 	var focus_control : FocusControl = focus_control_node.instantiate()
 	var target_parent = target.get_parent()
 	focus_control.size = target.focus_size

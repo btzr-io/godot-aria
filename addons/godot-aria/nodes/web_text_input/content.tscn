@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdy2tk2c7qth2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgwuo"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Box" type="PanelContainer"]
+offset_right = 100.0
+offset_bottom = 31.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tgwuo")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+vertical_alignment = 1

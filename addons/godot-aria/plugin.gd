@@ -14,14 +14,12 @@ func _exit_tree() -> void:
 	export_plugin = null
 	
 func _enable_plugin():
-	# The autoload can be a scene or script file.
-	add_autoload_singleton(AUTOLOAD_NAME, "res://addons/godot-aria/godot_aria.gd")
+	add_autoload_singleton(AUTOLOAD_NAME, "./godot_aria.gd")
 	
 func _disable_plugin():
 	remove_autoload_singleton(AUTOLOAD_NAME)
 	
 class WebExportPlugin extends EditorExportPlugin:
-	# Plugin's name.
 	var _plugin_name = "<plugin_name>"
 	var file_name = "index.js"
 	var export_path : String

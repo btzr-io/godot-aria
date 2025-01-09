@@ -6,6 +6,10 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 		<title>$GODOT_PROJECT_NAME</title>
 		<style>
+:root {
+	 /* This has to be set to switch between light or dark */
+	color-scheme: light dark;
+}
 html, body, #canvas {
 	margin: 0;
 	padding: 0;
@@ -88,10 +92,53 @@ body {
 [data-hidden="true"]:focus {
 	outline: none;
 }
+#dom_overlay_layer {
+	position: absolute;
+	top:0;
+	left: 0;
+	display: block;
+	z-index: 1;
+	margin: 0;
+	text-align: center;
+	pointer-events: none;
+}
+#dom_overlay_layer * {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+#dom_overlay_layer input {
+	/* Customization */
+	--text_color: white;
+	--placeholder_color: lightgray;
+	--selection_color: Highlight;
+	--selection_text_color: HighlightText;
+	/* Remove default syles /*/
+	padding: 0;
+	border: 0;
+	outline: 0;
+	margin: 0;
+	pointer-events: auto;
+	background-color: transparent;
+	color: var(--text_color);
+	font-size: 1em;
+	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	transform-origin: top left;
+}
+
+#dom_overlay_layer input::selection {
+	color: var(--selection_text_color);
+	background-color: var(--selection_color);
+}
+
+#dom_overlay_layer input::placeholder{
+  color: var(--placeholder_color);
+}
 		</style>
 		$GODOT_HEAD_INCLUDE
 	</head>
 	<body>
+		<div id="dom_overlay_layer"></div>
 		<div role="none" id="next_focus_redirect" tabindex="0" aria-label="" data-hidden="true"></div>
 		<canvas id="canvas" role="application" aria-roledescription="Interactive application" aria-busy="true"></canvas>
 		<div role="none" id="prev_focus_redirect" tabindex="0" aria-label="" data-hidden="true"></div>
@@ -109,7 +156,27 @@ const ARIA_PROXY = class {
 		this.trap_prev_focus = false;
 		this.force_focus_trap = false;
 		this.focus_enter_position = '';
+		this.dom_overlay_layer = document.getElementById('dom_overlay_layer');
+		this.dom_overlay_reference = {}
+		this.media_features = {
+			'prefers-contrast': ['more', 'less'],
+			'prefers-color-scheme': ['light', 'dark'],
+			'prefers-reduced-motion': ['reduce'],
+			'prefers-reduced-transparency': ['reduce'],
+		};
 	}
+	add_event_listener(event_name, cb) {
+		window.addEventListener(event_name, cb)
+	}
+	remove_event_listener(event_name,cb) {
+		window.addEventListener(event_name, cb)
+	}
+	sync_dom(t, l, w, h, sx, sy) {
+		this.dom_overlay_layer.style.width = `${w}px`;
+		this.dom_overlay_layer.style.height = `${h}px`;
+		this.dom_overlay_layer.style.transform = `matrix(${sx}, 0, 0, ${sy}, ${l}, ${t})`
+	}
+
 	focus_canvas() {
 		window.canvas.focus();
 	}
@@ -139,6 +206,59 @@ const ARIA_PROXY = class {
 		}
 		return evt.key.startsWith('Arrow');
 	}
+
+	create_element_reference(tag, id, props = {}) {
+		  // Return existing element
+		  var ref = document.getElementById(id)
+			if (ref != null ) { return ref; }
+			// Create a new element
+		  const element = document.createElement(tag);
+			element.id = id;
+			// Assing element attributes
+			for (let [k, v] of Object.entries(props)){
+				element[k] = v
+			}
+			this.dom_overlay_layer.appendChild(element);
+			this.dom_overlay_reference[id] = document.getElementById(id)
+			return element
+	}
+
+	remove_element_reference(id) {
+		var element = this.dom_overlay_reference[id];
+		if(element) { element.remove(); }
+	}
+
+	redraw_element(id, w = 0, h = 0, x =  0, y = 0, sx = 1.0, sy = 1.0, r = 0.0, a = 1.0) {
+		var element = this.dom_overlay_reference[id]
+		if (element) {
+				element.style.width = `${w}px`;
+				element.style.height = `${h}px`;
+				element.style.transform = `matrix(${sx}, 0, 0, ${sy}, ${x}, ${y}) rotate(${r}rad)`
+				element.style.opacity = a
+		}
+	}
+
+	match_media(match_query) {
+		return window.matchMedia(match_query).matches === true;
+	}
+  has_focus(element) {
+		return document.activeElement == element
+	}
+	get_active_element() {
+		return document.activeElement
+	}
+	get_media_feature(feature) {
+		var values = this.media_features[feature];
+		if (values) {
+			for (let value_index in values) {
+				let value = values[value_index];
+				if (this.match_media(`(${feature}: ${value})`)) {
+					return value;
+				}
+			}
+		}
+		return false;
+	}
 };
 
 window.GODOT_ARIA_PROXY = new ARIA_PROXY();
@@ -153,7 +273,7 @@ function toggleFocusRedirect(active) {
 	prev_focus_redirect.tabindex = active ? 0 : -1;
 }
 
-window.canvas.addEventListener('click', () => {
+window.canvas.addEventListener('click', (e) => {
 	if (window.GODOT_ARIA_PROXY) {
 		GODOT_ARIA_PROXY.focus_enter_position = ''
 	}
