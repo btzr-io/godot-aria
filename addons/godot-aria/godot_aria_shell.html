@@ -109,6 +109,8 @@ body {
 }
 #dom_overlay_layer input {
 	/* Customization */
+	--text_size: 16px;
+	--text_font:'Noto Sans', 'Droid Sans', Arial, sans-serif;
 	--text_color: white;
 	--placeholder_color: lightgray;
 	--selection_color: Highlight;
@@ -121,8 +123,8 @@ body {
 	pointer-events: auto;
 	background-color: transparent;
 	color: var(--text_color);
-	font-size: 1em;
-	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	font-size: var(--text_size);
+	font-family: var(--text_font);
 	transform-origin: top left;
 }
 
@@ -194,7 +196,7 @@ const ARIA_PROXY = class {
 		region.ariaLive = live;
 		region.textContent = message;
 	}
-	is_focus_trap(evt) {
+	is_focus_trap(evt, arrowKeys = true) {
 		if (this.force_focus_trap) {
 			return true
 		}
@@ -204,7 +206,7 @@ const ARIA_PROXY = class {
 		 if (evt.key == 'Tab' && !evt.shiftKey && this.trap_next_focus) {
 				 return true;
 		}
-		return evt.key.startsWith('Arrow');
+		return arrowKeys && evt.key.startsWith('Arrow');
 	}
 
 	create_element_reference(tag, id, props = {}) {

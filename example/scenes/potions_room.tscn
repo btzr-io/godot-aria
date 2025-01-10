@@ -1,280 +1,9 @@
-[gd_scene load_steps=50 format=3 uid="uid://cueed75lkevmp"]
+[gd_scene load_steps=9 format=3 uid="uid://cueed75lkevmp"]
 
 [ext_resource type="Script" path="res://example/scripts/potions_room.gd" id="1_avcxw"]
-[ext_resource type="Texture2D" uid="uid://c442j7wtbydj8" path="res://example/assets/potion_tileset.png" id="2_t27pg"]
 [ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="4_wq40o"]
-[ext_resource type="Script" path="res://addons/godot-aria/nodes/accessible_module.gd" id="5_lfd41"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_q4f02"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(0, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_h4587"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(16, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fxyd2"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(32, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_81ylg"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(48, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dj6xp"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(64, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_521el"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(80, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_wcdq3"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(0, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_7ahr2"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(16, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6cjnx"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(32, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ttg1x"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(64, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t8aml"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(48, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lgrdl"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(80, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_rwvne"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(0, 32, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_1h0mj"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(16, 32, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6b2sa"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(32, 32, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3njwt"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(48, 32, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dq6sa"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(64, 32, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_h85g0"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(80, 32, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_d5ouq"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(0, 48, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_d808b"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(16, 48, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_l4tke"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(32, 48, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vhfyo"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(48, 48, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6tx47"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(64, 48, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vuf7p"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(80, 48, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_cjch7"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(0, 64, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_4lqms"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(16, 64, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_cr5a3"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(80, 64, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_oqtcp"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(64, 64, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_4ftiu"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(48, 64, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_l5qkn"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(32, 64, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fi2p1"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(0, 80, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yykyy"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(16, 80, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_52xsj"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(32, 80, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dfje5"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(48, 80, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_71kjk"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(64, 80, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_i2cgs"]
-atlas = ExtResource("2_t27pg")
-region = Rect2(80, 80, 16, 16)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_1tdxn"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_q4f02")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_h4587")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fxyd2")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_81ylg")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dj6xp")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_521el")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wcdq3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_7ahr2")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_6cjnx")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ttg1x")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t8aml")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_lgrdl")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_rwvne")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1h0mj")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_6b2sa")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3njwt")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dq6sa")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_h85g0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_d5ouq")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_d808b")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_l4tke")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_vhfyo")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_6tx47")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_vuf7p")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_cjch7")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_4lqms")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_cr5a3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_oqtcp")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_4ftiu")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_l5qkn")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fi2p1")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yykyy")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_52xsj")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dfje5")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_71kjk")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_i2cgs")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d2eqv"]
-bg_color = Color(0, 0, 0, 0)
-draw_center = false
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(1.92523e-06, 0.753204, 0.431352, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yc50m"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vipav"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqycw"]
 content_margin_left = 16.0
@@ -320,163 +49,63 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="Animation" id="Animation_78wwx"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("VBoxContainer:position")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(28, 43)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("VBoxContainer:scale")
-tracks/1/interp = 2
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("VBoxContainer:modulate")
-tracks/2/interp = 2
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("VBoxContainer:rotation")
-tracks/3/interp = 2
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hqobc"]
+bg_color = Color(0.281934, 0.602052, 1, 0.231373)
 
-[sub_resource type="Animation" id="Animation_oo6s8"]
-resource_name = "new_animation"
-length = 3.0
-loop_mode = 2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("VBoxContainer:position")
-tracks/0/interp = 2
-tracks/0/loop_wrap = false
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(28, 43), Vector2(400, 300)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("VBoxContainer:scale")
-tracks/1/interp = 2
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(1, 1), Vector2(1.5, 1.5)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("VBoxContainer:modulate")
-tracks/2/interp = 2
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.166667, 3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("VBoxContainer:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.6, 2.26667, 3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.378736, -0.631809, 0.0]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_rstnj"]
-_data = {
-"RESET": SubResource("Animation_78wwx"),
-"new_animation": SubResource("Animation_oo6s8")
-}
+[sub_resource type="LabelSettings" id="LabelSettings_etolg"]
+font_size = 34
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_avcxw")
 
-[node name="Title" type="Label" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="."]
+offset_right = 1240.0
+offset_bottom = 680.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(800, 100)
-offset_left = 3.0
-offset_top = 2.0
-offset_right = 1242.0
-offset_bottom = 102.0
+layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Potions room"
+text = "Input test"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="PotionSprite" type="AnimatedSprite2D" parent="."]
-texture_filter = 1
-position = Vector2(618, 198)
-scale = Vector2(12, 12)
-sprite_frames = SubResource("SpriteFrames_1tdxn")
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 24
 
-[node name="AccessibleModule" type="Node" parent="PotionSprite"]
-script = ExtResource("5_lfd41")
-focus_size = Vector2(192, 192)
-focus_style = SubResource("StyleBoxFlat_d2eqv")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_left = 28.0
-offset_top = 43.0
-offset_right = 222.0
-offset_bottom = 369.0
-pivot_offset = Vector2(97, 133)
-theme_override_constants/separation = 20
-
-[node name="WebTextInput" type="PanelContainer" parent="VBoxContainer"]
+[node name="WebTextInput" type="PanelContainer" parent="CenterContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 clip_contents = true
 custom_minimum_size = Vector2(100, 24)
 layout_mode = 2
 focus_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_yc50m")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_vipav")
 script = ExtResource("4_wq40o")
 id = "text-1"
+placeholder = "Enter a name..."
+aria_label = "Player name"
+max_length = 32
 disabled_style = SubResource("StyleBoxFlat_wqycw")
 focus_style = SubResource("StyleBoxFlat_qpov5")
 normal_style = SubResource("StyleBoxFlat_ablbd")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_rstnj")
-}
+[node name="Greetings" type="Label" parent="CenterContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_hqobc")
+label_settings = SubResource("LabelSettings_etolg")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

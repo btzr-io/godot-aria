@@ -10,8 +10,8 @@ class_name WebTextInput
 
 var content_scene = preload("./content.tscn")
 
-signal on_input
-signal on_change
+signal on_input(event: JavaScriptObject)
+signal on_change(event: JavaScriptObject)
 
 const INPUT_TYPES = "text,email,date,date-local,month,number,password,tel,time,search,url,week"
 const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
@@ -29,7 +29,7 @@ const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
 ## Attribute to provide an accessible name for the <input> element
 @export var aria_label : String
 ## Hint for form autofill feature
-@export var auto_complete : String
+@export var auto_complete : String = "off"
 ## Maximum length (number of characters) of value
 @export_range(0, 524288, 1,"or_great") var max_length : int = 0
 ## Attribute that defines whether the <input> element may be checked for spelling errors.
@@ -53,6 +53,15 @@ const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
 	set(value):
 		normal_style = value
 		set_style(value)
+@export_subgroup("Text")
+@export_range(1, 9999, 1, 'suffix:px') var text_size : int = 16 :
+	set(value):
+		text_size = value
+		set_css_property('--text_size', str(value) + 'px')
+@export var text_font : String :
+	set(value):
+		text_font = value
+		set_css_property('--text_font', value)
 @export_subgroup("Colors")
 @export var text_color : Color :
 	set(value):
@@ -159,6 +168,13 @@ func update_style_colors() -> void:
 	for prop_name in prop_colors:
 		var prop_value : Color = self[prop_name]
 		if prop_value: set_css_property("--" + prop_name, prop_value)
+
+func update_text_font() -> void:
+	if text_size:
+		set_css_property('--text_size', str(text_size) + 'px')
+	if text_font:
+		set_css_property('--text_font', str(text_font))
+		
 		
 func handle_visibility():
 	var is_visible: bool = is_visible_in_tree()
@@ -177,21 +193,22 @@ func handle_html_focusout(args):
 	release_focus()
 
 func handle_html_input(args):
-	on_input.emit(args)
+	on_input.emit(args[0])
 
 func handle_html_change(args):
-	on_change.emit(args)
+	on_change.emit(args[0])
 
 func handle_html_keydown(args):
 	var html_event : JavaScriptObject = args[0]
-	if html_event.key == "Tab" and html_event.shiftKey:
+	var prevent_arrow_keys = false
+	if GodotARIA.aria_proxy.is_focus_trap(html_event, prevent_arrow_keys):
 		html_event.preventDefault()
-		GodotARIA.aria_proxy.focus_enter_position = "PREV"
-		GodotARIA.focus_canvas()
-	elif html_event.key == "Tab" and !html_event.shiftKey:
-		html_event.preventDefault()
-		GodotARIA.aria_proxy.focus_enter_position = "NEXT"
-		GodotARIA.focus_canvas()
+		if html_event.key == "Tab" and html_event.shiftKey:
+			GodotARIA.aria_proxy.focus_enter_position = "PREV"
+			GodotARIA.focus_canvas()
+		elif html_event.key == "Tab" and !html_event.shiftKey:
+			GodotARIA.aria_proxy.focus_enter_position = "NEXT"
+			GodotARIA.focus_canvas()
 
 func handle_blur():
 	if disabled: return
@@ -229,5 +246,6 @@ func _ready() -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		set_style(disabled_style if disabled else normal_style)
 		update_style_colors()
+		update_text_font()
 		await(get_tree().process_frame)
 		force_redraw()
