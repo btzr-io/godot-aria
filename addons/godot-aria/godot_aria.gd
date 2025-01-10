@@ -150,3 +150,8 @@ func alert_screen_reader(message, lang : String = TranslationServer.get_locale()
 		var format_message = parse_message(message)
 		debug_log("Alert: " + str(message))
 		aria_proxy.update_aria_region(format_message, "assertive", lang)
+
+func get_media_feature(feature: String):
+	if OS.has_feature("web") and aria_proxy != null and feature:
+		return GodotARIA.aria_proxy.get_media_feature(feature)
+	return null

@@ -130,7 +130,9 @@ func _enter_tree() -> void:
 	custom_minimum_size.x = 100
 	custom_minimum_size.y = 24
 	focus_mode = FOCUS_ALL
-	add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	var current_style : StyleBox = get_theme_stylebox("panel")
+	if current_style  is not StyleBoxEmpty:
+		add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	
 	if GODOT_ARIA_UTILS.is_web():
 		set_notify_transform(true)
