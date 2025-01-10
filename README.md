@@ -55,14 +55,18 @@ Remove focus of the current canvas element.
 
 ### GodotARIA.notify_screen_reader
 Awaits for a natural pause before speaking up. It won’t interrupt what the screen reader is currently announcing. Equivalent to aria-live [polite](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#polite).
+
+If no lang value is passed it will use the current locale from the [TranslationServer](https://docs.godotengine.org/en/4.3/classes/class_translationserver.html#class-translationserver-method-get-locale).
 ```py
-  GodotARIA.notify_screen_reader(message: String)
+  GodotARIA.notify_screen_reader(message: String, lang : String = TranslationServer.get_locale())
 ```
 
 ### GodotARIA.alert_screen_reader
 Speak an alert, interrupts whatever the screen reader is currently announcing. Equivalent to aria-live [assertive](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#assertive).
+
+If no lang value is passed it will use the current locale from the [TranslationServer](https://docs.godotengine.org/en/4.3/classes/class_translationserver.html#class-translationserver-method-get-locale).
 ```py
-  GodotARIA.alert_screen_reader(message: String)
+  GodotARIA.alert_screen_reader(message: String, lang : String = TranslationServer.get_locale())
 ```
 
 ### GodotARIA.get_media_feature
