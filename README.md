@@ -13,6 +13,9 @@ For more information about screen readers and browsers compatibility please see:
 - Restore or gain focus with tab / shift + tab navigation.
 - Focus can leave the canvas element to navigate other content on the web page.
 - Accessibility module for Node2D.
+- Customizable web input element as a control node.
+- Native html input as an hybrid control node ( replacement for LineEdit control )
+- Media features detection (reduce motion, contrast preferences, light / dark theme)
 
 ## Installation
 Just add the addons folder to your project and enable the plugin.
@@ -61,6 +64,19 @@ Speak an alert, interrupts whatever the screen reader is currently announcing. E
 ```py
   GodotARIA.alert_screen_reader(message: String)
 ```
+
+### GodotARIA.get_media_feature
+Detects and returns a [media feature](https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_features) value. 
+
+```py
+  GodotARIA.get_media_feature(feature: String)
+```
+
+Supported feature values:
+- prefers-color-scheme: Detect if the user prefers a light or dark color scheme.
+- prefers-contrast: Detects if the user has requested the system increase or decrease the amount of contrast between adjacent colors. 
+- prefers-reduced-motion: The user prefers less motion on the page.
+- prefers-reduced-transparency: Detects if a user has enabled a setting on their device to reduce the transparent or translucent layer effects used on the device.
 
 ## Accessibiltiy module for Node2D
 To make any Node2D accessible you can add the custom node AccessibleModule as a direct child, this will create an overlay control to handle the focus behavior.
