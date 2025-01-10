@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://example/scripts/potions_room.gd" id="1_avcxw"]
 [ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="4_wq40o"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vipav"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6siqt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqycw"]
 content_margin_left = 16.0
@@ -88,7 +88,7 @@ clip_contents = true
 custom_minimum_size = Vector2(100, 24)
 layout_mode = 2
 focus_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_vipav")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6siqt")
 script = ExtResource("4_wq40o")
 id = "text-1"
 placeholder = "Enter a name..."
