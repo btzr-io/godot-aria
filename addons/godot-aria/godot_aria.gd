@@ -24,10 +24,10 @@ class HTML_REF extends Object:
 	var id : String
 	var element : JavaScriptObject
 	# Constructor
-	func _init(element_id : String, tag : String = "div",  props : Dictionary = {}):
+	func _init(element_id : String, tag : String = "div",  props : Dictionary = {}, layer = "overlay"):
 		var initProps : JavaScriptObject = GODOT_ARIA_UTILS.dictionary_to_js(props)
 		id = element_id
-		element = GodotARIA.aria_proxy.create_element_reference(tag, id, initProps)
+		element = GodotARIA.aria_proxy.create_element_reference(tag, id, initProps, layer)
 	# Destructor
 	func _notification(what: int) -> void:
 		if what == NOTIFICATION_PREDELETE:
@@ -42,7 +42,7 @@ func setup_focus_layer():
 	focus_layer = focus_layer_scene.instantiate()
 	get_tree().current_scene.call_deferred("add_child", focus_layer)
 
-func register_focus(target: AccessibleModule) -> FocusControl:
+func register_focus(target: FocusModule) -> FocusControl:
 	if !is_instance_valid(focus_layer):
 		setup_focus_layer()
 	return focus_layer.create_focus_control(target)
@@ -52,6 +52,8 @@ func _enter_tree() -> void:
 	setup_focus_layer()
 	focus_manager = FocusManager.new(get_tree(), get_viewport())
 	visual_viewport = JavaScriptBridge.get_interface('visualViewport')
+	# Expose controls to accessibility tree
+	get_tree().node_added.connect(handle_node_added)
 	
 func _process(delta: float) -> void:
 	if !GODOT_ARIA_UTILS.is_web(): return
@@ -111,6 +113,12 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			get_viewport().gui_release_focus()
 
+func handle_node_added(node: Variant):
+	if node is Control:
+		if AccessibilityModule.is_valid_control(node):
+			var module = AccessibilityModule.new()
+			node.add_child(module)
+		
 func _ready() -> void:
 	if !OS.has_feature("web"):
 		push_warning("Addon only available for web platform.")

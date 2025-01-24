@@ -66,16 +66,38 @@ offset_bottom = 680.0
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="H1" type="Label" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(800, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Input test"
+text = "Input test."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
+[node name="H2" type="Label" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(800, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Text 2 test!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Button" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Okey"
+
+[node name="CheckBox" type="CheckBox" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Toggle option
+"
+
+[node name="Slider" type="HSlider" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 size_flags_horizontal = 4

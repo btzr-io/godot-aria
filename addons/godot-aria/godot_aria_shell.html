@@ -92,7 +92,8 @@ body {
 [data-hidden="true"]:focus {
 	outline: none;
 }
-#dom_overlay_layer {
+
+#dom_layer {
 	position: absolute;
 	top:0;
 	left: 0;
@@ -102,12 +103,34 @@ body {
 	text-align: center;
 	pointer-events: none;
 }
-#dom_overlay_layer * {
+
+#dom_layer * {
 	position: absolute;
 	left: 0;
 	top: 0;
+	border: 0;
+	margin: 0;
+	outline: none;
+	background-color: transparent;
+	/* Remove default syles /*/
+	padding: 0;
+	border: 0;
+	outline: 0;
+	margin: 0;
+	/* Enable interaction */
+	pointer-events: auto;
 }
-#dom_overlay_layer input {
+
+#dom_layer *[data-layer='hidden'] {
+	opacity: 0;
+	color: transparent;
+	background-color: transparent;
+	z-index: -1;
+	pointer-events: none;
+	user-select: none;
+}
+
+#dom_layer input[data-layer='overlay'] {
 	/* Customization */
 	--text_size: 16px;
 	--text_font:'Noto Sans', 'Droid Sans', Arial, sans-serif;
@@ -115,36 +138,29 @@ body {
 	--placeholder_color: lightgray;
 	--selection_color: Highlight;
 	--selection_text_color: HighlightText;
-	/* Remove default syles /*/
-	padding: 0;
-	border: 0;
-	outline: 0;
-	margin: 0;
-	pointer-events: auto;
-	background-color: transparent;
 	color: var(--text_color);
 	font-size: var(--text_size);
 	font-family: var(--text_font);
 	transform-origin: top left;
 }
 
-#dom_overlay_layer input::selection {
+#dom_layer input[data-layer='overlay']::selection {
 	color: var(--selection_text_color);
 	background-color: var(--selection_color);
 }
 
-#dom_overlay_layer input::placeholder{
+#dom_layer input[data-layer='overlay']::placeholder{
   color: var(--placeholder_color);
 }
 		</style>
 		$GODOT_HEAD_INCLUDE
 	</head>
 	<body>
-		<div id="dom_overlay_layer"></div>
-		<div role="none" id="next_focus_redirect" tabindex="0" aria-label="" data-hidden="true"></div>
+		<div id="dom_layer" role="presentation"></div>
+		<div id="next_focus_redirect" tabindex="0" aria-hidden="true" data-hidden="true"></div>
 		<canvas id="canvas" role="application" aria-roledescription="Interactive application" aria-busy="true"></canvas>
-		<div role="none" id="prev_focus_redirect" tabindex="0" aria-label="" data-hidden="true"></div>
-		<div id="global-aria-live-region" aria-live="polite"></div>
+		<div id="prev_focus_redirect" tabindex="0" aria-hidden="true" data-hidden="true"></div>
+		<div id="global-aria-live-region" aria-live="polite" role="status"></div>
 		<div id="status" data-hidden="false" role="presentation">
 			<img id="status-splash" data-hidden="false" src="$GODOT_SPLASH" alt="" aria-hidden="true" inherit>
 			<progress role="none" id="status-progress" data-hidden="true" max="100" aria-hidden="true" inherit></progress>
@@ -158,14 +174,22 @@ const ARIA_PROXY = class {
 		this.trap_prev_focus = false;
 		this.force_focus_trap = false;
 		this.focus_enter_position = '';
-		this.dom_overlay_layer = document.getElementById('dom_overlay_layer');
-		this.dom_overlay_reference = {}
+		this.dom_layer = document.getElementById('dom_layer');
+		this.dom_refs = {}
 		this.media_features = {
 			'prefers-contrast': ['more', 'less'],
 			'prefers-color-scheme': ['light', 'dark'],
 			'prefers-reduced-motion': ['reduce'],
 			'prefers-reduced-transparency': ['reduce'],
 		};
+
+		this.tab_pressed = true
+
+		window.addEventListener('keyup', (e) => {
+			// Tab pressed
+			if (e.key == "Tab") { this.tab_pressed = true }
+		})
+		window.addEventListener('focusin', (e) => {})
 	}
 	add_event_listener(event_name, cb) {
 		window.addEventListener(event_name, cb)
@@ -174,9 +198,9 @@ const ARIA_PROXY = class {
 		window.addEventListener(event_name, cb)
 	}
 	sync_dom(t, l, w, h, sx, sy) {
-		this.dom_overlay_layer.style.width = `${w}px`;
-		this.dom_overlay_layer.style.height = `${h}px`;
-		this.dom_overlay_layer.style.transform = `matrix(${sx}, 0, 0, ${sy}, ${l}, ${t})`
+		this.dom_layer.style.width = `${w}px`;
+		this.dom_layer.style.height = `${h}px`;
+		this.dom_layer.style.transform = `matrix(${sx}, 0, 0, ${sy}, ${l}, ${t})`
 	}
 
 	focus_canvas() {
@@ -209,29 +233,30 @@ const ARIA_PROXY = class {
 		return arrowKeys && evt.key.startsWith('Arrow');
 	}
 
-	create_element_reference(tag, id, props = {}) {
+	create_element_reference(tag, id, props = {}, layer = "overlay") {
 		  // Return existing element
 		  var ref = document.getElementById(id)
 			if (ref != null ) { return ref; }
 			// Create a new element
 		  const element = document.createElement(tag);
 			element.id = id;
+			element.setAttribute('data-layer',layer)
 			// Assing element attributes
 			for (let [k, v] of Object.entries(props)){
 				element[k] = v
 			}
-			this.dom_overlay_layer.appendChild(element);
-			this.dom_overlay_reference[id] = document.getElementById(id)
+			this.dom_layer.appendChild(element);
+			this.dom_refs[id] = document.getElementById(id)
 			return element
 	}
 
 	remove_element_reference(id) {
-		var element = this.dom_overlay_reference[id];
+		var element = this.dom_refs[id];
 		if(element) { element.remove(); }
 	}
 
 	redraw_element(id, w = 0, h = 0, x =  0, y = 0, sx = 1.0, sy = 1.0, r = 0.0, a = 1.0) {
-		var element = this.dom_overlay_reference[id]
+		var element = this.dom_refs[id]
 		if (element) {
 				element.style.width = `${w}px`;
 				element.style.height = `${h}px`;
@@ -269,10 +294,10 @@ var next_focus_redirect = document.getElementById('next_focus_redirect');
 var prev_focus_redirect = document.getElementById('prev_focus_redirect');
 
 function toggleFocusRedirect(active) {
-	next_focus_redirect.inert = !active;
-	next_focus_redirect.tabindex = active ? 0 : -1;
-	prev_focus_redirect.inert = !active;
-	prev_focus_redirect.tabindex = active ? 0 : -1;
+	next_focus_redirect.tabIndex = (active ? "0" : "-1");
+	// next_focus_redirect.inert = !active;
+	prev_focus_redirect.tabIndex = (active ? "0" : "-1");
+	// prev_focus_redirect.inert = !active;
 }
 
 window.canvas.addEventListener('click', (e) => {
@@ -287,6 +312,7 @@ window.canvas.addEventListener('focus', () => {
 
 window.canvas.addEventListener('focusout', () => {
 	toggleFocusRedirect(true);
+	window.canvas.zindex = -1
 	if (window.GODOT_ARIA_PROXY) {
 		window.GODOT_ARIA_PROXY.update_aria_region('');
 		window.GODOT_ARIA_PROXY.focus_enter_position = '';

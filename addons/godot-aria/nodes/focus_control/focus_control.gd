@@ -2,7 +2,7 @@ extends Button
 class_name FocusControl
 
 var focus_control_scene = preload("../focus_control/node.tscn")
-var target : AccessibleModule
+var target : FocusModule
 var target_parent : Node2D
 
 func _ready() -> void:

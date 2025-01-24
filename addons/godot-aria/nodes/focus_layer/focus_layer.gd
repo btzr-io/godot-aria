@@ -12,7 +12,7 @@ func handle_focus_changed(focus_control: Control) -> void:
 		var aria_label = focus_control.target.aria_label
 		GodotARIA.notify_screen_reader(aria_label)
 
-func create_focus_control(target:  AccessibleModule) -> FocusControl:
+func create_focus_control(target:  FocusModule) -> FocusControl:
 	if !OS.has_feature("web"): return
 	var focus_control : FocusControl = focus_control_node.instantiate()
 	var target_parent = target.get_parent()

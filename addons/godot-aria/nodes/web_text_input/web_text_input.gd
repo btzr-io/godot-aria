@@ -146,7 +146,8 @@ func _enter_tree() -> void:
 			'disabled': disabled,
 			'ariaLabel': aria_label,
 			'placeholder': placeholder,
-			'spellcheck': spell_check
+			'spellcheck': spell_check,
+			'tabindex': -1,
 		}
 		# Conditional props
 		if max_length > 0:
