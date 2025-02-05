@@ -1,0 +1,141 @@
+[gd_scene load_steps=12 format=3 uid="uid://clofup1uh0coq"]
+
+[ext_resource type="Script" path="res://example/demo/text_content.gd" id="1_m300i"]
+[ext_resource type="Script" path="res://example/demo/region.gd" id="1_mwovh"]
+[ext_resource type="Script" path="res://example/demo/heading.gd" id="3_bo624"]
+[ext_resource type="Script" path="res://example/demo/button.gd" id="4_iefqo"]
+[ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="4_q465v"]
+[ext_resource type="Script" path="res://example/demo/progress_bar.gd" id="6_hgb0r"]
+[ext_resource type="Script" path="res://example/demo/slider.gd" id="6_tiavb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a71ms"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w3gx5"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.176471, 0.176471, 0.176471, 0.588235)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mxwsi"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kuukl"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Main" type="Node2D"]
+
+[node name="UI" type="Control" parent="."]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1240.0
+offset_bottom = 680.0
+
+[node name="Demo" type="CenterContainer" parent="UI"]
+layout_mode = 0
+offset_right = 1240.0
+offset_bottom = 680.0
+
+[node name="Content" type="VBoxContainer" parent="UI/Demo"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="TextContent" type="VBoxContainer" parent="UI/Demo/Content"]
+layout_mode = 2
+focus_mode = 2
+script = ExtResource("1_m300i")
+
+[node name="Heading" type="RichTextLabel" parent="UI/Demo/Content/TextContent"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 48
+text = "Title"
+fit_content = true
+script = ExtResource("3_bo624")
+
+[node name="Paragraph" type="RichTextLabel" parent="UI/Demo/Content/TextContent"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 18
+text = "Paragraph description text..."
+fit_content = true
+
+[node name="Region" type="VBoxContainer" parent="UI/Demo/Content"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+script = ExtResource("1_mwovh")
+
+[node name="Button" type="Button" parent="UI/Demo/Content/Region"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+text = "Action"
+script = ExtResource("4_iefqo")
+
+[node name="WebTextInput" type="PanelContainer" parent="UI/Demo/Content/Region"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(100, 24)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_a71ms")
+script = ExtResource("4_q465v")
+id = "text-1"
+placeholder = "Enter a name..."
+aria_label = "Player name"
+max_length = 32
+disabled_style = SubResource("StyleBoxFlat_w3gx5")
+focus_style = SubResource("StyleBoxFlat_mxwsi")
+normal_style = SubResource("StyleBoxFlat_kuukl")
+
+[node name="CheckBox" type="CheckBox" parent="UI/Demo/Content/Region"]
+layout_mode = 2
+text = "Toggle Action 1"
+icon_alignment = 2
+
+[node name="CheckButton" type="CheckButton" parent="UI/Demo/Content/Region"]
+layout_mode = 2
+text = "Toggle Action 2"
+
+[node name="Slider" type="HSlider" parent="UI/Demo/Content/Region"]
+layout_mode = 2
+script = ExtResource("6_tiavb")
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/Demo/Content/Region"]
+layout_mode = 2
+focus_mode = 2
+value = 50.0
+script = ExtResource("6_hgb0r")

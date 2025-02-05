@@ -13,8 +13,6 @@ var overlay_transform : Dictionary
 var prev_overlay_transform : Dictionary = {}
 
 # Focus managment
-var focus_layer : CanvasLayer
-var focus_layer_scene :Resource = preload("./nodes/focus_layer/node.tscn")
 var focus_manager : FocusManager
 
 # VisualViewport API
@@ -24,10 +22,10 @@ class HTML_REF extends Object:
 	var id : String
 	var element : JavaScriptObject
 	# Constructor
-	func _init(element_id : String, tag : String = "div",  props : Dictionary = {}, layer = "overlay"):
+	func _init(element_id : String, tag : String = "div",  props : Dictionary = {}, layer = "overlay", parent_element = null):
 		var initProps : JavaScriptObject = GODOT_ARIA_UTILS.dictionary_to_js(props)
 		id = element_id
-		element = GodotARIA.aria_proxy.create_element_reference(tag, id, initProps, layer)
+		element = GodotARIA.aria_proxy.create_element_reference(tag, id, initProps, layer, parent_element)
 	# Destructor
 	func _notification(what: int) -> void:
 		if what == NOTIFICATION_PREDELETE:
@@ -38,18 +36,8 @@ class HTML_REF extends Object:
 	func update_style(styles : Dictionary = {}): 
 		GODOT_ARIA_UTILS.dictionary_to_js(styles, element.style)
 
-func setup_focus_layer():
-	focus_layer = focus_layer_scene.instantiate()
-	get_tree().current_scene.call_deferred("add_child", focus_layer)
-
-func register_focus(target: FocusModule) -> FocusControl:
-	if !is_instance_valid(focus_layer):
-		setup_focus_layer()
-	return focus_layer.create_focus_control(target)
-
 func _enter_tree() -> void:
 	if !OS.has_feature("web"): return
-	setup_focus_layer()
 	focus_manager = FocusManager.new(get_tree(), get_viewport())
 	visual_viewport = JavaScriptBridge.get_interface('visualViewport')
 	# Expose controls to accessibility tree
@@ -72,17 +60,21 @@ func _draw() -> void:
 		overlay_transform.scale_x,
 		overlay_transform.scale_y
 	)
+	
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
 		debug_log("canvas: focus")
 		if aria_proxy:
 			if aria_proxy.focus_enter_position == "NEXT":
-				focus_manager.restore_focus(aria_proxy.focus_enter_position)
-				
+				if !focus_manager.has_focus():
+					focus_manager.restore_focus("START")
+				else:
+					focus_manager.restore_focus("NEXT")	
 			elif !focus_manager.has_focus():
 				focus_manager.trap_focus()
-				focus_manager.restore_focus(aria_proxy.focus_enter_position)
-			
+				if aria_proxy.focus_enter_position:
+					focus_manager.restore_focus(aria_proxy.focus_enter_position)
+				
 func _input(event: InputEvent) -> void:
 	if !OS.has_feature("web") or !aria_proxy: return
 	if event.is_action_pressed("ui_focus_prev", true):
@@ -115,7 +107,10 @@ func _input(event: InputEvent) -> void:
 
 func handle_node_added(node: Variant):
 	if node is Control:
-		if AccessibilityModule.is_valid_control(node):
+		# Prevent exposing control to the accessibility tree
+		if "aria_hidden" in node:
+			if node.aria_hidden: return
+		if 'aria_role' in node or AccessibilityModule.is_valid_control(node):
 			var module = AccessibilityModule.new()
 			node.add_child(module)
 		

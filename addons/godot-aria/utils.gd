@@ -29,10 +29,20 @@ static  func get_viewport_css_transform(canvas: Viewport) -> Dictionary:
 	}
 	return result
 
-static func get_control_css_transform(control: Control) -> Dictionary:
-	var real_transform = control.get_global_transform_with_canvas()
-	var real_scale = real_transform.get_scale()
-	var real_position = real_transform.origin 
+	
+static func get_control_css_transform(control: Control, parent_control: Variant):
+	var real_transform : Transform2D = control.get_global_transform_with_canvas()
+	var real_scale : Vector2 = real_transform.get_scale()
+	var real_position : Vector2 = real_transform.origin
+	
+
+	
+	# Nested content
+	if parent_control:
+		var parent_transform : Transform2D = parent_control.get_global_transform_with_canvas()
+		real_scale = real_scale / parent_transform.get_scale() 
+		real_position =  (real_position / real_transform.get_scale()) - (parent_transform.origin / parent_transform.get_scale()) 
+		
 	var result = {
 		top = snapped(real_position.y, 0.001), 
 		left = snapped(real_position.x, 0.001), 
@@ -41,7 +51,8 @@ static func get_control_css_transform(control: Control) -> Dictionary:
 		scale_x = snapped(real_scale.x, 0.001),
 		scale_y = snapped(real_scale.y, 0.001),
 		rotation = snapped(real_transform.get_rotation(), 0.001),
-		opacity = GODOT_ARIA_UTILS.get_modulate_in_tree(control).a
+		pivot_x = control.pivot_offset.x,
+		pivot_y = control.pivot_offset.y
 	}
 	return result
 
@@ -53,6 +64,23 @@ static func get_focusable_controls(node: Node, list = []) -> void:
 		if child.get_child_count() > 0:
 			get_focusable_controls(child, list)
 
+static func get_parent_in_accesibility_tree(node: Control) -> Variant:
+	if node is Control:
+		var scaned : Control = node.get_parent_control()
+		while scaned:
+			var accessibility_module = GODOT_ARIA_UTILS.get_accessibility_module(scaned)
+			if accessibility_module and AccessibilityModule.CONTAINER_ROLES.has(accessibility_module.role):
+				return scaned
+			scaned = scaned.get_parent_control()
+	return null
+	
+static  func get_accessibility_module(node : Control) -> Variant:
+	if !node: return null
+	for child in node.get_children():
+		if child is AccessibilityModule:
+			return child
+	return null
+	
 static func get_modulate_in_tree(item: CanvasItem) -> Color:
 	var container = item.get_parent()
 	var modulate_in_tree : Color = item.modulate * item.self_modulate

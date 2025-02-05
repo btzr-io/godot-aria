@@ -31,7 +31,7 @@ const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
 ## Hint for form autofill feature
 @export var auto_complete : String = "off"
 ## Maximum length (number of characters) of value
-@export_range(0, 524288, 1,"or_great") var max_length : int = 0
+@export_range(0, 254, 1,"or_great") var max_length : int = 0
 ## Attribute that defines whether the <input> element may be checked for spelling errors.
 @export var spell_check : bool = false
 ## Boolean attribute, when present, the user can neither edit nor focus on <input> element.
@@ -86,6 +86,9 @@ const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
 var box : PanelContainer
 var overlay_target : Label
 var input_ref : GodotARIA.HTML_REF
+var parent_control : Variant
+var parent_module : Variant
+var parent_element : JavaScriptObject
 
 # Events callbacks
 var html_input_cb = JavaScriptBridge.create_callback(handle_html_input)
@@ -147,7 +150,8 @@ func _enter_tree() -> void:
 			'ariaLabel': aria_label,
 			'placeholder': placeholder,
 			'spellcheck': spell_check,
-			'tabindex': -1,
+			# Focus managment is controled by godot and not the browser:
+			'tabIndex': -1,
 		}
 		# Conditional props
 		if max_length > 0:
@@ -156,7 +160,8 @@ func _enter_tree() -> void:
 		if auto_complete:
 			init_props['autocomplete'] = auto_complete
 		# Html element reference
-		input_ref = GodotARIA.HTML_REF.new(id, "input", init_props)
+		parent_element = _get_parent_element()
+		input_ref = GodotARIA.HTML_REF.new(id, "input", init_props, "overlay", parent_element)
 		input_ref.element.addEventListener("focus", html_focus_cb)
 		input_ref.element.addEventListener("focusout", html_focusout_cb)
 		input_ref.element.addEventListener("input", html_input_cb)
@@ -164,7 +169,18 @@ func _enter_tree() -> void:
 		input_ref.element.addEventListener("keydown", html_keydown_cb)
 		# Initial visibility
 		handle_visibility()
-		
+
+func _get_parent_element() -> Variant:
+	parent_control = GODOT_ARIA_UTILS.get_parent_in_accesibility_tree(overlay_target)
+	parent_module = GODOT_ARIA_UTILS.get_accessibility_module(parent_control)
+	# Prevent invalid hierarchy
+	if parent_module:
+		# Only text content should be indside reading mode
+		if parent_module.role == "document":
+			return null
+		return parent_module.input_ref.element
+	return null
+
 func update_style_colors() -> void:
 	if !input_ref or !input_ref.element: return
 	var prop_colors = ['text_color', 'placeholder_color', 'selection_color', 'selection_text_color']
@@ -188,6 +204,14 @@ func handle_focus() -> void:
 	set_style(focus_style)
 	if GODOT_ARIA_UTILS.is_web():
 		input_ref.element.focus()
+		GodotARIA.aria_proxy.set_active_descendant()
+
+func handle_blur():
+	input_ref.element.blur()
+	GodotARIA.focus_canvas()
+
+	if disabled: return
+	set_style(normal_style)
 
 func handle_html_focus(args):
 	grab_focus()
@@ -207,16 +231,11 @@ func handle_html_keydown(args):
 	if GodotARIA.aria_proxy.is_focus_trap(html_event, prevent_arrow_keys):
 		html_event.preventDefault()
 		if html_event.key == "Tab" and html_event.shiftKey:
-			GodotARIA.aria_proxy.focus_enter_position = "PREV"
-			GodotARIA.focus_canvas()
+			GodotARIA.focus_manager.restore_focus("PREV")
+			
 		elif html_event.key == "Tab" and !html_event.shiftKey:
-			GodotARIA.aria_proxy.focus_enter_position = "NEXT"
-			GodotARIA.focus_canvas()
-
-func handle_blur():
-	if disabled: return
-	set_style(normal_style)
-
+			GodotARIA.focus_manager.restore_focus("NEXT")
+			
 func _notification(what: int) -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		if what == NOTIFICATION_PREDELETE:
@@ -225,7 +244,7 @@ func _notification(what: int) -> void:
 			force_redraw()
 
 func force_redraw():
-	element_transform = GODOT_ARIA_UTILS.get_control_css_transform(overlay_target)
+	element_transform = GODOT_ARIA_UTILS.get_control_css_transform(overlay_target, parent_control)
 	if element_transform.hash() != prev_element_transform.hash():
 		prev_element_transform = element_transform
 		queue_redraw()
@@ -233,15 +252,9 @@ func force_redraw():
 func _draw() -> void:
 	if !GODOT_ARIA_UTILS.is_web() or !element_transform: return
 	GodotARIA.aria_proxy.redraw_element(
-		id,
-		element_transform.width, 
-		element_transform.height, 
-		element_transform.left, 
-		element_transform.top, 
-		element_transform.scale_x,
-		element_transform.scale_y,
-		element_transform.rotation,
-		element_transform.opacity
+		input_ref.element,
+		GODOT_ARIA_UTILS.dictionary_to_js(element_transform),
+		GODOT_ARIA_UTILS.get_modulate_in_tree(overlay_target)
 	)
 		
 func _ready() -> void:

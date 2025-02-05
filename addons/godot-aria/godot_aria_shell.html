@@ -6,10 +6,9 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 		<title>$GODOT_PROJECT_NAME</title>
 		<style>
-:root {
-	 /* This has to be set to switch between light or dark */
-	color-scheme: light dark;
-}
+ /* This has to be set to switch between light or dark */
+:root { color-scheme: light dark; }
+
 html, body, #canvas {
 	margin: 0;
 	padding: 0;
@@ -31,13 +30,13 @@ body {
 	outline: none;
 }
 
-#status[data-hidden="false"], #status-splash[data-hidden="false"], #status-progress[data-hidden="false"] {
+#status, #status-splash, #status-progress {
 	position: absolute;
 	left: 0;
 	right: 0;
 }
 
-#status[data-hidden="false"], #status-splash[data-hidden="false"] {
+#status, #status-splash {
 	top: 0;
 	bottom: 0;
 }
@@ -50,7 +49,7 @@ body {
 	align-items: center;
 }
 
-#status-splash[data-hidden="false"] {
+#status-splash {
 	max-height: 100%;
 	max-width: 100%;
 	margin: auto;
@@ -60,7 +59,7 @@ body {
 	display: block;
 }
 
-#status-progress[data-hidden="false"] {
+#status-progress {
 	bottom: 10%;
 	width: 50%;
 	margin: 0 auto;
@@ -121,15 +120,16 @@ body {
 	pointer-events: auto;
 }
 
+/* Hidden DOM */
 #dom_layer *[data-layer='hidden'] {
-	opacity: 0;
 	color: transparent;
 	background-color: transparent;
 	z-index: -1;
 	pointer-events: none;
-	user-select: none;
+	user-select: text;
 }
 
+/* WebInputText Control  */
 #dom_layer input[data-layer='overlay'] {
 	/* Customization */
 	--text_size: 16px;
@@ -156,14 +156,15 @@ body {
 		$GODOT_HEAD_INCLUDE
 	</head>
 	<body>
-		<div id="dom_layer" role="presentation"></div>
-		<div id="next_focus_redirect" tabindex="0" aria-hidden="true" data-hidden="true"></div>
-		<canvas id="canvas" role="application" aria-roledescription="Interactive application" aria-busy="true"></canvas>
-		<div id="prev_focus_redirect" tabindex="0" aria-hidden="true" data-hidden="true"></div>
-		<div id="global-aria-live-region" aria-live="polite" role="status"></div>
-		<div id="status" data-hidden="false" role="presentation">
-			<img id="status-splash" data-hidden="false" src="$GODOT_SPLASH" alt="" aria-hidden="true" inherit>
-			<progress role="none" id="status-progress" data-hidden="true" max="100" aria-hidden="true" inherit></progress>
+		<!-- Interactive content -->
+		<canvas id="canvas" role="application" aria-roledescription="Game" aria-owns="dom_layer"></canvas>
+		<div id="dom_layer"></div>
+		<!-- Live updates / notifications -->
+		<div id="global-aria-live-region" aria-live="polite"></div>
+		<!-- Status -->
+		<div id="status" inert>
+			<img id="status-splash" src="$GODOT_SPLASH" alt="" aria-hidden="true">
+			<progress id="status-progress" data-hidden="true" max="100" aria-hidden="true"></progress>
 			<div id="status-notice" data-hidden="true" aria-live="assertive"></div>
 		</div>
 		<script src="$GODOT_URL"></script>
@@ -173,36 +174,22 @@ const ARIA_PROXY = class {
 		this.trap_next_focus = false;
 		this.trap_prev_focus = false;
 		this.force_focus_trap = false;
-		this.focus_enter_position = '';
-		this.dom_layer = document.getElementById('dom_layer');
+		this.enter_focus_position = '';
 		this.dom_refs = {}
+		this.dom_layer = document.getElementById('dom_layer');
 		this.media_features = {
 			'prefers-contrast': ['more', 'less'],
 			'prefers-color-scheme': ['light', 'dark'],
 			'prefers-reduced-motion': ['reduce'],
 			'prefers-reduced-transparency': ['reduce'],
 		};
+	}
 
-		this.tab_pressed = true
-
-		window.addEventListener('keyup', (e) => {
-			// Tab pressed
-			if (e.key == "Tab") { this.tab_pressed = true }
-		})
-		window.addEventListener('focusin', (e) => {})
-	}
-	add_event_listener(event_name, cb) {
-		window.addEventListener(event_name, cb)
-	}
-	remove_event_listener(event_name,cb) {
-		window.addEventListener(event_name, cb)
-	}
 	sync_dom(t, l, w, h, sx, sy) {
 		this.dom_layer.style.width = `${w}px`;
 		this.dom_layer.style.height = `${h}px`;
-		this.dom_layer.style.transform = `matrix(${sx}, 0, 0, ${sy}, ${l}, ${t})`
+		this.dom_layer.style.transform = `matrix(${sx}, 0, 0, ${sy}, ${l}, ${t})`;
 	}
-
 	focus_canvas() {
 		window.canvas.focus();
 	}
@@ -220,20 +207,30 @@ const ARIA_PROXY = class {
 		region.ariaLive = live;
 		region.textContent = message;
 	}
+
+	handle_focus_exit() {
+		window.canvas.removeAttribute("aria-owns")
+		this.set_active_descendant()
+		this.dom_layer.inert = true
+	}
+
 	is_focus_trap(evt, arrowKeys = true) {
 		if (this.force_focus_trap) {
 			return true
+		}
+		if (evt.key == 'Tab') {
+			var tab_direction = evt.shiftKey ? 'PREV' : 'NEXT';
 		}
 		if (evt.key == 'Tab' && evt.shiftKey && this.trap_prev_focus) {
 			return true;
 		}
 		 if (evt.key == 'Tab' && !evt.shiftKey && this.trap_next_focus) {
-				 return true;
+			 return true;
 		}
 		return arrowKeys && evt.key.startsWith('Arrow');
 	}
 
-	create_element_reference(tag, id, props = {}, layer = "overlay") {
+	create_element_reference(tag, id, props = {}, layer = "overlay", parent_element = null) {
 		  // Return existing element
 		  var ref = document.getElementById(id)
 			if (ref != null ) { return ref; }
@@ -245,7 +242,11 @@ const ARIA_PROXY = class {
 			for (let [k, v] of Object.entries(props)){
 				element[k] = v
 			}
-			this.dom_layer.appendChild(element);
+			if (parent_element) {
+				parent_element.appendChild(element);
+			} else {
+				this.dom_layer.appendChild(element);
+			}
 			this.dom_refs[id] = document.getElementById(id)
 			return element
 	}
@@ -255,21 +256,32 @@ const ARIA_PROXY = class {
 		if(element) { element.remove(); }
 	}
 
-	redraw_element(id, w = 0, h = 0, x =  0, y = 0, sx = 1.0, sy = 1.0, r = 0.0, a = 1.0) {
-		var element = this.dom_refs[id]
+	redraw_element(element, t, a = 1.0) {
 		if (element) {
-				element.style.width = `${w}px`;
-				element.style.height = `${h}px`;
-				element.style.transform = `matrix(${sx}, 0, 0, ${sy}, ${x}, ${y}) rotate(${r}rad)`
+				element.style.width = `${t.width}px`;
+				element.style.height = `${t.height}px`;
+				element.style.top = `${t.top}px`;
+				element.style.left = `${t.left}px`;
+				element.style.transform = `matrix(${t.scale_x}, 0, 0, ${t.scale_y}, 0, 0) rotate(${t.rotation}rad)`
+				element.style.transformOrigin = `${t.pivot_x}px ${t.pivot_y}px`
 				element.style.opacity = a
 		}
 	}
-
 	match_media(match_query) {
 		return window.matchMedia(match_query).matches === true;
 	}
   has_focus(element) {
 		return document.activeElement == element
+	}
+	set_active_descendant(id) {
+		if (id && id.length) {
+			window.canvas.setAttribute('aria-activedescendant', id);
+		} else {
+			window.canvas.removeAttribute('aria-activedescendant')
+		}
+	}
+	get_active_descendant() {
+		return window.canvas.getAttribute('aria-activedescendant')
 	}
 	get_active_element() {
 		return document.activeElement
@@ -286,54 +298,64 @@ const ARIA_PROXY = class {
 		}
 		return null;
 	}
+	create_focus_redirect_element(id) {
+		var element = document.createElement('div');
+		element.id = id
+		element.role = "none"
+		element.tabIndex = 0
+		element.ariaLabel = ""
+		element.setAttribute('data-hidden', "true")
+		return element
+	}
+	toggle_focus_redirect(active) {
+		var prev_focus_redirect = window.prev_focus_redirect
+		var next_focus_redirect = window.next_focus_redirect
+		// Create "Previous" focus redirect
+		if (active && !prev_focus_redirect) {
+			prev_focus_redirect = this.create_focus_redirect_element('prev_focus_redirect')
+			prev_focus_redirect.addEventListener('focus', (e) => {
+				e.preventDefault();
+				this.focus_enter_position = 'END';
+				window.canvas.focus();
+			})
+			window.canvas.insertAdjacentElement("afterend", prev_focus_redirect)
+		}
+		// Create "Next" focus redirect
+		if (active && !next_focus_redirect) {
+			next_focus_redirect = this.create_focus_redirect_element('next_focus_redirect')
+			next_focus_redirect.addEventListener('focus', (e) => {
+				e.preventDefault();
+				this.focus_enter_position = 'NEXT';
+				window.canvas.focus();
+			})
+			window.canvas.insertAdjacentElement("beforebegin", next_focus_redirect)
+		}
+		// Remove all focus redirects
+		if(!active && prev_focus_redirect) {
+			prev_focus_redirect.remove()
+		}
+		if (!active && next_focus_redirect) {
+			next_focus_redirect.remove()
+		}
+	}
 };
 
 window.GODOT_ARIA_PROXY = new ARIA_PROXY();
 
-var next_focus_redirect = document.getElementById('next_focus_redirect');
-var prev_focus_redirect = document.getElementById('prev_focus_redirect');
-
-function toggleFocusRedirect(active) {
-	next_focus_redirect.tabIndex = (active ? "0" : "-1");
-	// next_focus_redirect.inert = !active;
-	prev_focus_redirect.tabIndex = (active ? "0" : "-1");
-	// prev_focus_redirect.inert = !active;
-}
-
-window.canvas.addEventListener('click', (e) => {
-	if (window.GODOT_ARIA_PROXY) {
-		GODOT_ARIA_PROXY.focus_enter_position = ''
-	}
-})
-
 window.canvas.addEventListener('focus', () => {
-	toggleFocusRedirect(false);
+	if (window.GODOT_ARIA_PROXY) {
+		window.GODOT_ARIA_PROXY.toggle_focus_redirect(false)
+	}
 })
 
 window.canvas.addEventListener('focusout', () => {
-	toggleFocusRedirect(true);
-	window.canvas.zindex = -1
 	if (window.GODOT_ARIA_PROXY) {
 		window.GODOT_ARIA_PROXY.update_aria_region('');
 		window.GODOT_ARIA_PROXY.focus_enter_position = '';
+		window.GODOT_ARIA_PROXY.toggle_focus_redirect(true);
 	}
 })
 
-next_focus_redirect.addEventListener('focus', (e) => {
-	if (window.GODOT_ARIA_PROXY) {
-		window.GODOT_ARIA_PROXY.focus_enter_position = 'START';
-	}
-	e.preventDefault();
-	window.canvas.focus();
-})
-
-prev_focus_redirect.addEventListener('focus', (e) => {
-	if (window.GODOT_ARIA_PROXY) {
-		window.GODOT_ARIA_PROXY.focus_enter_position = 'END';
-	}
-	e.preventDefault();
-	window.canvas.focus();
-})
 		</script>
 		<script>
 const GODOT_CONFIG = $GODOT_CONFIG;
@@ -349,8 +371,6 @@ const engine = new Engine(GODOT_CONFIG);
 
 	let initializing = true;
 	let statusMode = '';
-
-	// window.GODOT_ARIA_PROXY.update_aria_region('Loading')
 
 	function setStatusMode(mode) {
 		if (statusMode === mode || !initializing) {
@@ -396,7 +416,8 @@ const engine = new Engine(GODOT_CONFIG);
 		if (statusProgress.value != 100) {
 			statusProgress.value = 100;
 		}
-		window.canvas.ariaBusy = 'false';
+		// window.canvas.ariaBusy = 'false';
+		window.GODOT_ARIA_PROXY.toggle_focus_redirect(true)
 		// Hide splash screen
 		setStatusMode('hidden');
 	}

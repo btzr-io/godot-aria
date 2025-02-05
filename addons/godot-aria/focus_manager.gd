@@ -48,7 +48,7 @@ func focus_start() -> void:
 	if !focus_list.is_empty():
 		focus_list[0].grab_focus()
 
-func restore_focus(focus_position: String = "FIRST"):
+func restore_focus(focus_position = "START") -> void:
 	if !OS.has_feature("web"): return
 	scan_focus_list()
 	if focus_list.is_empty(): return
@@ -88,6 +88,6 @@ func handle_focus_changed(control: Control):
 	else:
 		trap_prev_focus = false
 		trap_next_focus = false
-
+	
 	if GodotARIA.aria_proxy:
 		GodotARIA.aria_proxy.update_trap_focus(trap_prev_focus, trap_next_focus)
