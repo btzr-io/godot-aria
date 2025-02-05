@@ -4,18 +4,14 @@
 # Godot-ARIA
 A plugin for creating accessible rich internet applications with godot.
 
-For more information about screen readers and browsers compatibility please see: [current live region behaviour](https://tetralogical.com/blog/2024/05/01/why-are-my-live-regions-not-working/#current-live-region-behaviour).
-
-
 ### Features
 - Accessible html page template.
 - Notifiy changes or important alerts to screen readers.
+- Expose Control nodes to the browser accesibility tree.
+- Media features detection (reduce motion, contrast preferences, light / dark theme)
 - Restore or gain focus with tab / shift + tab navigation.
 - Focus can leave the canvas element to navigate other content on the web page.
-- Accessibility module for Node2D.
-- Customizable web input element as a control node.
-- Native html input as an hybrid control node ( replacement for LineEdit control )
-- Media features detection (reduce motion, contrast preferences, light / dark theme)
+- Native html text input element as an hybrid control node ( replacement for LineEdit control )
 
 ## Installation
 Just add the addons folder to your project and enable the plugin.
@@ -40,7 +36,48 @@ Export > html/focus_canvas_on_start: false
 See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tutorials/platform/web/customizing_html5_shell.html#custom-html-page-for-web-export)
 
 ## Usage
-Global class `GodotARIA` provides methods to manage focus for the html canvas element and a way to send notifications or alerts to screen readers as [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live) updates.
+
+### Aria variables
+By default if supported text content (label, richTextLabel) and some interactive controls (button, checkbox, slider, progressbar) will be automatically exposed to the accesibility tree as hidden dom elements with aria attributes.
+
+Declaring aria_* prefixed variables indside a control node will add or overwrite the initial value of an aria attribute of the hidden dom element.
+
+### Examples
+Custom label:
+```gdscript
+extends Button
+
+# By default the text property will be used as a label 
+var aria_label = "Action"
+```
+
+Prevents this plugin from exposing a Control node by default:
+```gdscript
+extends Button
+
+var aria_hidden = true
+```
+
+Expose a non interactive Control node:
+```gdscript
+extends Container
+# Declaring a valid aria role will expose the control to the accesibility tree
+var aria_role = "region"
+var aria_label = "The region name..."
+```
+
+Custom role:
+```gdscript
+extends Label
+
+# By default Label and RichText label are exposed with the 'paragraph' role
+var aria_role = "heading"
+var aria_level = 1
+```
+
+### Additional utilities
+Use the global class `GodotARIA` to call utility functions. 
+
 ### GodotARIA.focus_canvas
 Focus the current canvas element.
 ```py
@@ -81,36 +118,3 @@ Supported feature values:
 - prefers-contrast: Detects if the user has requested the system increase or decrease the amount of contrast between adjacent colors. 
 - prefers-reduced-motion: The user prefers less motion on the page.
 - prefers-reduced-transparency: Detects if a user has enabled a setting on their device to reduce the transparent or translucent layer effects used on the device.
-
-## Accessibiltiy module for Node2D
-To make any Node2D accessible you can add the custom node AccessibleModule as a direct child, this will create an overlay control to handle the focus behavior.
-
-### Features
-- Add focus behavior.
-- Custom focus style.
-- Tab navigation between other focusable elements.
-- Notify name or description to screen readers on focus.
-
-### Properties
-#### aria_label : String
-Name or description to be anounced by screen readers.
-
-#### focus_mode : Control.FocusMode
-Focus mode of the overlay control: None, Click, All.
-
-#### focus_size : Vector2
-The focusable area size, calculated by default if the node has a visible texture or rect.
-
-#### focus_style : StyleBox
-Add a custom style if needed, otherwise you can use has_focus() and apply a custom focus indicator on the node.
-
-#### focus_control : FocusControl
-Reference of the overlay control that manages the focus behavior, use this property to interact directly with the overlay control.
-
-### Methods
-
-#### grab_focus() -> void
-Focus the overlay control.
-
-#### has_focus() -> bool
-Checks if the overlay control has focus.
