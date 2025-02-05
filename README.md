@@ -15,7 +15,7 @@ A plugin for creating accessible rich internet applications with godot.
 - Native html text input element as an hybrid control node ( replacement for LineEdit control )
 
 ### Current screen reader support:
-- NVDA works consintently well across all major browsers ( Chrome based and Firefox ).  
+- NVDA works very well across all major browsers ( Chrome based and Firefox ).  
 - JAWS screen reader with Google chrome or similar browsers (Brave, Edge, Opera).
 
 ### Planned support:
