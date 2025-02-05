@@ -14,7 +14,7 @@ A plugin for creating accessible rich internet applications with godot.
 - Native html text input element as an hybrid control node ( replacement for LineEdit control )
 
 ## Installation
-Just add the addons folder to your project and enable the plugin.
+Just add the addons folder to your project and enable the plugin or install from the godot [assets library](https://godotengine.org/asset-library/asset/3584).
 
 See: [Installing a plugin](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html#installing-a-plugin)
 
