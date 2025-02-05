@@ -68,6 +68,7 @@ var aria_hidden = true
 Expose a non interactive Control node:
 ```gdscript
 extends Container
+
 # Declaring a valid aria role will expose the control to the accesibility tree
 var aria_role = "region"
 var aria_label = "The region name..."
