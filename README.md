@@ -13,6 +13,14 @@ A plugin for creating accessible rich internet applications with godot.
 - Focus can leave the canvas element to navigate other content on the web page.
 - Native html text input element as an hybrid control node ( replacement for LineEdit control )
 
+### Current screen reader support:
+- NVDA works consintently well across all major browsers ( Chrome based and Firefox ).  
+- JAWS screen reader with Google chrome or similar browsers (Brave, Edge, Opera).
+
+### Planned support:
+- ORCA for linux
+- Voice over for MacOs
+  
 ## Installation
 Just add the addons folder to your project and enable the plugin or install from the godot [assets library](https://godotengine.org/asset-library/asset/3584).
 
