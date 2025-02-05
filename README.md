@@ -8,6 +8,7 @@ A plugin for creating accessible rich internet applications with godot.
 - Accessible html page template.
 - Notifiy changes or important alerts to screen readers.
 - Expose Control nodes to the browser accesibility tree.
+- Screen reader visual focus highlighter.
 - Media features detection (reduce motion, contrast preferences, light / dark theme)
 - Restore or gain focus with tab / shift + tab navigation.
 - Focus can leave the canvas element to navigate other content on the web page.
