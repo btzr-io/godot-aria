@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://wewet7dcraiy"]
+
+[ext_resource type="Script" path="res://addons/godot-aria/nodes/accessibility_tree/tree.gd" id="1_kbvjv"]
+
+[node name="AccessibilityTree" type="Tree"]
+visible = false
+custom_minimum_size = Vector2(200, 200)
+offset_right = 1240.0
+offset_bottom = 680.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+scroll_vertical_enabled = false
+script = ExtResource("1_kbvjv")

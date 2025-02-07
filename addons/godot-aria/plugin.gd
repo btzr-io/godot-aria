@@ -4,14 +4,25 @@ extends EditorPlugin
 # Replace this value with a PascalCase autoload name, as per the GDScript style guide.
 const AUTOLOAD_NAME = "GodotARIA"
 var export_plugin : WebExportPlugin
+var dock
 
 func _enter_tree():
 	export_plugin = WebExportPlugin.new()
 	add_export_plugin(export_plugin)
+	
+		# Initialization of the plugin goes here.
+	# Load the dock scene and instantiate it.
+	dock = preload("res://addons/godot-aria/nodes/accessibility_tree/content.tscn").instantiate()
+
+	# Add the loaded scene to the docks.
+	add_control_to_dock(DOCK_SLOT_LEFT_BR, dock)
+	# Note that LEFT_UL means the left of the editor, upper-left dock.
 
 func _exit_tree() -> void:
 	remove_export_plugin(export_plugin)
 	export_plugin = null
+	remove_control_from_docks(dock)
+	dock.free()
 	
 func _enable_plugin():
 	add_autoload_singleton(AUTOLOAD_NAME, "./godot_aria.gd")

@@ -35,6 +35,10 @@ var parent_control : Variant
 var parent_module : Variant
 var element_transform : Dictionary
 
+# HTML EVENTS
+var handle_html_click_cb = JavaScriptBridge.create_callback(handle_html_click)
+var handle_html_value_changed_cb = JavaScriptBridge.create_callback(handle_html_value_changed)
+
 static func is_valid_control(control: Control) -> bool:
 	if control is BaseButton:
 		return true
@@ -125,29 +129,52 @@ func _get_role_template() -> Variant:
 		template["props"]["role"] = role
 		if !label.is_empty():
 			template["props"]["ariaLabel"] = label
+	
+	# Generic button template
+	if container is BaseButton:
+		template['tag'] = 'buttton'
+		template['props']['tabIndex'] = -1
+		if role == "button" and container.toggle_mode:
+			template["props"]["ariaPressed"] = container.button_pressed
 	# Checkbox template
 	if role == "checkbox" or role == "switch":
 		template["props"]["ariaChecked"] = false
 		if container is BaseButton:
 			template["props"]["ariaChecked"] = container.button_pressed
+	
 	# Slider template
 	if RANGE_ROLES.has(role):
 		if container is Range:
-			template["props"]["ariaMin"] = container.min_value
-			template["props"]["ariaMax"] = container.max_value
+			# Use implicit role from semantics:
+			template["props"].erase('role')
+			
+			template["props"]["min"] = container.min_value
+			template["props"]["max"] = container.max_value
+			template["props"]["value"] = container.value
 			template["props"]["ariaValueNow"] = container.value
-			if container is HSlider:
-				template["props"]['ariaOrientation'] = "horizontal"
-			if container is VSlider:
-				template["props"]['ariaOrientation'] = "vertical"
-	
+			if role == "progressbar":
+				template["tag"] = "progress"
+			if role == "meter":
+				template["tag"] = "meter"
+			if container is Slider:
+				template["tag"] = 'input'
+				template["props"]["type"] = "range"
+				template["props"]["tabIndex"] = -1
+				template["props"]["orient"] = _get_container_orientation()
+				template["props"]["ariaOrientation"] = template["props"]["orient"]
 	# Map additional aria props
 	for aria_prop in ARIA_PROPS:
 		if aria_prop in container:
 			template["props"][ARIA_PROPS[aria_prop]] = container[aria_prop]
-	
 	return template
 
+func _get_container_orientation() -> String:
+	if container is HSlider:
+		return "horizontal"
+	if container is VSlider:
+		return "vertical"
+	return "horizontal"
+	
 func _get_configuration_warnings() -> PackedStringArray:
 	var parent = get_parent()
 	if parent is Control:
@@ -187,6 +214,10 @@ func _enter_tree() -> void:
 		if template:
 			parent_element = _get_parent_element()
 			input_ref = GodotARIA.HTML_REF.new(template["id"], template["tag"], template["props"], "hidden", parent_element)
+			if container is BaseButton:
+				input_ref.element.addEventListener('click', handle_html_click_cb)
+			if container is Range:
+				input_ref.element.addEventListener('input', handle_html_value_changed_cb)
 			handle_visibility()
 			
 func handle_mouse_entered():
@@ -210,6 +241,25 @@ func handle_item_rect_changed():
 	await(get_tree().process_frame)
 	update_element_area()
 
+func handle_html_click(args):
+	var event = args[0]
+	# Focus on interaction
+	if !container.has_focus(): container.grab_focus()
+
+	if container is BaseButton:
+		# Checkbox or switch
+		if container.toggle_mode:
+			container.button_pressed = !container.button_pressed
+		else:
+			container.pressed.emit()
+			container._pressed()
+func handle_html_value_changed(args):
+	var event = args[0]
+	# Focus on interaction
+	if !container.has_focus(): container.grab_focus()
+	if 'value' in container:
+		container.value = float(event.target.value)
+	
 func _get_parent_element() -> Variant:
 	parent_control = GODOT_ARIA_UTILS.get_parent_in_accesibility_tree(container)
 	parent_module = GODOT_ARIA_UTILS.get_accessibility_module(parent_control)
@@ -232,12 +282,16 @@ func handle_unfocus() -> void:
 			GodotARIA.aria_proxy.set_active_descendant()
 
 func handle_toggled(toggled_on) -> void:
+	if role == "button":
+		input_ref.element['ariaPressed'] = toggled_on
 	if role == "checkbox" or role== "switch":
 		input_ref.element['ariaChecked'] = toggled_on
+		
 		
 func handle_value_changed(new_value) -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		if 'value' in container:
+			input_ref.element.value  = new_value
 			input_ref.element['ariaValueNow'] = new_value
 			
 func _notification(what: int) -> void:
