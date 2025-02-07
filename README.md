@@ -48,15 +48,14 @@ See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tu
 
 ### Aria variables
 Text content and some interactive controls will be automatically exposed to the accesibility tree as hidden dom elements with aria role and attributes:
-- Button -> 'button'
-- Checkbox -> 'checkbox'
-- Checkbutton -> 'switch'
-- Label and RichTextLabel -> 'paragraph'
-- Progressbar -> 'progressbar'
-- Slider -> 'slider'
+- Button -> role='button'
+- Checkbox -> role='checkbox'
+- Checkbutton -> role='switch'
+- Label and RichTextLabel -> role='paragraph'
+- Progressbar -> role='progressbar'
+- Slider -> role='slider'
 
 Declaring aria_* prefixed variables indside a control node will add or overwrite the initial value of an aria attribute of the hidden dom element.
-For more information about aria attributes please read the 
 
 ### Examples
 Custom label:
