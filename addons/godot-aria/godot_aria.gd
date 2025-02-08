@@ -147,7 +147,7 @@ func notify_screen_reader(message,lang : String = TranslationServer.get_locale()
 		var format_message = parse_message(message)
 		debug_log("Speak: " + format_message)
 		aria_proxy.update_aria_region(format_message, "polite", lang)
-	
+		
 func alert_screen_reader(message, lang : String = TranslationServer.get_locale()) -> void:
 	if OS.has_feature("web") and aria_proxy != null:
 		var format_message = parse_message(message)

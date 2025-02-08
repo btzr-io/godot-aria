@@ -201,13 +201,14 @@ const ARIA_PROXY = class {
 		this.trap_next_focus = next;
 	}
 	update_aria_region(message, live = 'polite', lang = 'en') {
-		this.current_message == message;
-		const region = document.getElementById('global-aria-live-region');
+		const region = document.createElement("div");
+		region.id = "speak-" + Date.now();
 		region.lang = lang;
 		region.ariaLive = live;
-		region.textContent = message;
+		document.body.appendChild(region)
+		window.setTimeout(() => {region.textContent = message;}, 100);
+		window.setTimeout(() => {document.body.removeChild(region);}, 1000)
 	}
-
 	handle_focus_exit() {
 		window.canvas.removeAttribute("aria-owns")
 		this.set_active_descendant()
@@ -350,7 +351,6 @@ window.canvas.addEventListener('focus', () => {
 
 window.canvas.addEventListener('focusout', () => {
 	if (window.GODOT_ARIA_PROXY) {
-		window.GODOT_ARIA_PROXY.update_aria_region('');
 		window.GODOT_ARIA_PROXY.focus_enter_position = '';
 		window.GODOT_ARIA_PROXY.toggle_focus_redirect(true);
 	}
