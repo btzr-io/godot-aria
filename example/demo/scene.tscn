@@ -1,6 +1,5 @@
-[gd_scene load_steps=13 format=3 uid="uid://clofup1uh0coq"]
+[gd_scene load_steps=12 format=3 uid="uid://clofup1uh0coq"]
 
-[ext_resource type="Script" path="res://example/demo/text_content.gd" id="1_m300i"]
 [ext_resource type="Script" path="res://example/demo/region.gd" id="1_mwovh"]
 [ext_resource type="Script" path="res://example/demo/demo.gd" id="1_ustga"]
 [ext_resource type="Script" path="res://example/demo/heading.gd" id="3_bo624"]
@@ -75,23 +74,21 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_constants/separation = 32
 
-[node name="TextContent" type="VBoxContainer" parent="UI/Demo/Content"]
+[node name="Heading" type="RichTextLabel" parent="UI/Demo/Content"]
 layout_mode = 2
 focus_mode = 2
-script = ExtResource("1_m300i")
-
-[node name="Heading" type="RichTextLabel" parent="UI/Demo/Content/TextContent"]
-layout_mode = 2
 theme_override_font_sizes/normal_font_size = 48
 text = "Title"
 fit_content = true
 script = ExtResource("3_bo624")
 
-[node name="Paragraph" type="RichTextLabel" parent="UI/Demo/Content/TextContent"]
+[node name="Paragraph" type="RichTextLabel" parent="UI/Demo/Content"]
 layout_mode = 2
+focus_mode = 2
 theme_override_font_sizes/normal_font_size = 18
-text = "Paragraph description text..."
+text = "The quick brown fox jumps over the lazy dog."
 fit_content = true
+selection_enabled = true
 
 [node name="Region" type="VBoxContainer" parent="UI/Demo/Content"]
 custom_minimum_size = Vector2(240, 0)

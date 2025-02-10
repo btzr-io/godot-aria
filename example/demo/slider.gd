@@ -1,6 +1,6 @@
 extends HSlider
 
-@onready var progress = get_parent().get_node("ProgressBar")
+@onready var progress : ProgressBar = get_parent().get_node("ProgressBar")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

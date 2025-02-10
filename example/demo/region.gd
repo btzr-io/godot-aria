@@ -1,4 +1,4 @@
 extends VBoxContainer
 
-var aria_role = 'region'
-var aria_label = 'Interactive Controls'
+# var aria_role = 'region'
+# var aria_label = 'Interactive Controls'

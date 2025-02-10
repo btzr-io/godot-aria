@@ -26,7 +26,7 @@ const ARIA_PROPS = {
 
 var is_hovered : bool = false
 var is_focus_on_click : bool = false
-
+var template : Dictionary
 var container
 var input_ref
 var parent : Variant
@@ -115,39 +115,41 @@ func _get_role_template() -> Variant:
 		if "aria_level" in container:
 			template["tag"] = "h" + str(container.aria_level)
 			template["props"]["textContent"] = _get_text_content()
+	
 	# <p>text...</p>
 	if role == "paragraph":
-		template["tag"] = "p"
-		template["props"]["textContent"] = _get_text_content()
-		# If no "reading" mode container is detected then it should become one:
-		if !is_content_for_reading_mode():
-			template['props']['role'] = "document"
-			template['props']['ariaRoleDescription'] = "paragraph"
+		if is_content_for_reading_mode():
+			template["tag"] = "p"
+			template["props"]["textContent"] = _get_text_content()
+		else:
+			template["props"]["role"] = "presentation"
+			template["props"]["ariaDescription"] = _get_text_content()
+			
 	# Generic ARIA templates
 	# <div role={role} aria-label={ariaLabel}></div>
 	if  role not in TEXT_ROLES:
 		template["props"]["role"] = role
 		if !label.is_empty():
 			template["props"]["ariaLabel"] = label
-	
+			
 	# Generic button template
 	if container is BaseButton:
 		template['tag'] = 'buttton'
 		template['props']['tabIndex'] = -1
 		if role == "button" and container.toggle_mode:
 			template["props"]["ariaPressed"] = container.button_pressed
+	
 	# Checkbox template
 	if role == "checkbox" or role == "switch":
 		template["props"]["ariaChecked"] = false
 		if container is BaseButton:
 			template["props"]["ariaChecked"] = container.button_pressed
-	
+			
 	# Slider template
 	if RANGE_ROLES.has(role):
 		if container is Range:
 			# Use implicit role from semantics:
 			template["props"].erase('role')
-			
 			template["props"]["min"] = container.min_value
 			template["props"]["max"] = container.max_value
 			template["props"]["value"] = container.value
@@ -210,7 +212,7 @@ func _enter_tree() -> void:
 			if 'toggled' in container:
 				container.toggled.connect(handle_toggled)
 		# Html element reference
-		var template : Dictionary = _get_role_template()
+		template = _get_role_template()
 		if template:
 			parent_element = _get_parent_element()
 			input_ref = GodotARIA.HTML_REF.new(template["id"], template["tag"], template["props"], "hidden", parent_element)
@@ -273,13 +275,17 @@ func _get_parent_element() -> Variant:
 
 func handle_focus() -> void:
 	if GODOT_ARIA_UTILS.is_web():
-		GodotARIA.aria_proxy.set_active_descendant(input_ref.element.id)
+		#if role == "paragraph":
+			#var text = _get_text_content()
+			#if text: GodotARIA.notify_screen_reader(text)
+		if input_ref: 
+			GodotARIA.aria_proxy.set_active_descendant(input_ref.element.id)
 
 
 func handle_unfocus() -> void:
-	if GODOT_ARIA_UTILS.is_web():
-		if GodotARIA.aria_proxy.get_active_descendant() == input_ref.element.id:
-			GodotARIA.aria_proxy.set_active_descendant()
+	if GODOT_ARIA_UTILS.is_web() and input_ref:
+			if GodotARIA.aria_proxy.get_active_descendant() == input_ref.element.id:
+				GodotARIA.aria_proxy.set_active_descendant()
 
 func handle_toggled(toggled_on) -> void:
 	if role == "button":
