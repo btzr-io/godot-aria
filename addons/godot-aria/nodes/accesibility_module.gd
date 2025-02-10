@@ -26,7 +26,6 @@ const ARIA_PROPS = {
 
 var is_hovered : bool = false
 var is_focus_on_click : bool = false
-var template : Dictionary
 var container
 var input_ref
 var parent : Variant
@@ -212,7 +211,7 @@ func _enter_tree() -> void:
 			if 'toggled' in container:
 				container.toggled.connect(handle_toggled)
 		# Html element reference
-		template = _get_role_template()
+		var template : Variant = _get_role_template()
 		if template:
 			parent_element = _get_parent_element()
 			input_ref = GodotARIA.HTML_REF.new(template["id"], template["tag"], template["props"], "hidden", parent_element)

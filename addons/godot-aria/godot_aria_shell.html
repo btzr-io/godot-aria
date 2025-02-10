@@ -205,8 +205,7 @@ const ARIA_PROXY = class {
 		region.id = "speak-" + Date.now();
 		region.lang = lang;
 		region.ariaLive = live;
-		region.ariaRelevant = "text"
-		document.body.appendChild(region)
+		document.body.appendChild(region);
 		window.setTimeout(() => {region.textContent = message;}, 0);
 		window.setTimeout(() => {document.body.removeChild(region);}, 1000)
 	}
