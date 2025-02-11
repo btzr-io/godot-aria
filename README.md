@@ -15,11 +15,11 @@ A plugin for creating accessible rich internet applications with godot.
 - Native html text input element as an hybrid control node ( replacement for LineEdit control )
 
 ### Current screen reader support:
-- NVDA works very well across all major browsers ( Chrome based and Firefox ).  
-- JAWS screen reader with Google chrome or similar browsers (Brave, Edge, Opera).
+- NVDA for Windows works very well across all major browsers ( Chrome based and Firefox ).  
+- JAWS for Window works better with Google chrome or similar browsers (Brave, Edge, Opera).
+- ORCA for Linux works well with chrome based browsers and firefox.
 
 ### Planned support:
-- ORCA for linux
 - Voice over for MacOs
   
 ## Installation
@@ -109,17 +109,21 @@ Remove focus of the current canvas element.
 ### GodotARIA.notify_screen_reader
 Awaits for a natural pause before speaking up. It won’t interrupt what the screen reader is currently announcing. Equivalent to aria-live [polite](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#polite).
 
+If the reannounce value is set to true the screen reader can repeat the previous message otherwise no update will occur until the message changes.
+
 If no lang value is passed it will use the current locale from the [TranslationServer](https://docs.godotengine.org/en/4.3/classes/class_translationserver.html#class-translationserver-method-get-locale).
 ```py
-  GodotARIA.notify_screen_reader(message: String, lang : String = TranslationServer.get_locale())
+  GodotARIA.notify_screen_reader(message: String, reannounce: bool = false, lang : String = TranslationServer.get_locale())
 ```
 
 ### GodotARIA.alert_screen_reader
 Speak an alert, interrupts whatever the screen reader is currently announcing. Equivalent to aria-live [assertive](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live#assertive).
 
+If the reannounce value is set to true the screen reader can repeat the previous message otherwise no update will occur until the message changes.
+
 If no lang value is passed it will use the current locale from the [TranslationServer](https://docs.godotengine.org/en/4.3/classes/class_translationserver.html#class-translationserver-method-get-locale).
 ```py
-  GodotARIA.alert_screen_reader(message: String, lang : String = TranslationServer.get_locale())
+  GodotARIA.alert_screen_reader(message: String, reannounce: bool = false, lang : String = TranslationServer.get_locale())
 ```
 
 ### GodotARIA.get_media_feature
