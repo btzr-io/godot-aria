@@ -128,13 +128,13 @@ func _get_role_template() -> Variant:
 	# <div role={role} aria-label={ariaLabel}></div>
 	if  role not in TEXT_ROLES:
 		template["props"]["role"] = role
+		template['props']['tabIndex'] = -1
 		if !label.is_empty():
 			template["props"]["ariaLabel"] = label
 			
 	# Generic button template
 	if container is BaseButton:
 		template['tag'] = 'buttton'
-		template['props']['tabIndex'] = -1
 		if role == "button" and container.toggle_mode:
 			template["props"]["ariaPressed"] = container.button_pressed
 	
@@ -160,7 +160,6 @@ func _get_role_template() -> Variant:
 			if container is Slider:
 				template["tag"] = 'input'
 				template["props"]["type"] = "range"
-				template["props"]["tabIndex"] = -1
 				template["props"]["orient"] = _get_container_orientation()
 				template["props"]["ariaOrientation"] = template["props"]["orient"]
 	# Map additional aria props

@@ -92,7 +92,7 @@ body {
 	outline: none;
 }
 
-#dom_layer {
+#dom-layer {
 	position: absolute;
 	top:0;
 	left: 0;
@@ -103,7 +103,7 @@ body {
 	pointer-events: none;
 }
 
-#dom_layer * {
+#dom-layer * {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -121,7 +121,7 @@ body {
 }
 
 /* Hidden DOM */
-#dom_layer *[data-layer='hidden'] {
+#dom-layer *[data-layer='hidden'] {
 	color: transparent;
 	background-color: transparent;
 	z-index: -1;
@@ -130,7 +130,7 @@ body {
 }
 
 /* WebInputText Control  */
-#dom_layer input[data-layer='overlay'] {
+#dom-layer input[data-layer='overlay'] {
 	/* Customization */
 	--text_size: 16px;
 	--text_font:'Noto Sans', 'Droid Sans', Arial, sans-serif;
@@ -144,12 +144,12 @@ body {
 	transform-origin: top left;
 }
 
-#dom_layer input[data-layer='overlay']::selection {
+#dom-layer input[data-layer='overlay']::selection {
 	color: var(--selection_text_color);
 	background-color: var(--selection_color);
 }
 
-#dom_layer input[data-layer='overlay']::placeholder{
+#dom-layer input[data-layer='overlay']::placeholder{
   color: var(--placeholder_color);
 }
 		</style>
@@ -157,10 +157,10 @@ body {
 	</head>
 	<body>
 		<!-- Interactive content -->
-		<canvas id="canvas" role="application" aria-roledescription="Game" aria-owns="dom_layer"></canvas>
-		<div id="dom_layer"></div>
+		<canvas id="canvas" role="application" aria-roledescription="Game" aria-owns="dom-layer"></canvas>
+		<div id="dom-layer"></div>
 		<!-- Live updates / notifications -->
-		<div id="global-aria-live-region" aria-live="polite"></div>
+		<div id="global-live-region" aria-live="polite" aria-relevant="all" data-hidden="true"></div>
 		<!-- Status -->
 		<div id="status" inert>
 			<img id="status-splash" src="$GODOT_SPLASH" alt="" aria-hidden="true">
@@ -176,7 +176,8 @@ const ARIA_PROXY = class {
 		this.force_focus_trap = false;
 		this.enter_focus_position = '';
 		this.dom_refs = {}
-		this.dom_layer = document.getElementById('dom_layer');
+		this.dom_layer = document.getElementById('dom-layer');
+		this.global_live_region = document.getElementById('global-live-region');
 		this.media_features = {
 			'prefers-contrast': ['more', 'less'],
 			'prefers-color-scheme': ['light', 'dark'],
@@ -200,15 +201,27 @@ const ARIA_PROXY = class {
 		this.trap_prev_focus = prev;
 		this.trap_next_focus = next;
 	}
-	update_aria_region(message, live = 'polite', lang = 'en') {
-		const region = document.createElement("div");
-		region.id = "speak-" + Date.now();
+	update_live_region(message, live = 'polite', reannounce = false, lang = 'en') {
+		const region = reannounce ? document.createElement("div") : this.global_live_region;
+		// Prevent reannouncement of live region update
+		if (!reannounce && this.global_live_region.textContent == message) {
+			return
+		}
 		region.lang = lang;
 		region.ariaLive = live;
-		document.body.appendChild(region);
-		window.setTimeout(() => {region.textContent = message;}, 0);
-		window.setTimeout(() => {document.body.removeChild(region);}, 1000)
+		if (reannounce) {
+			this.global_live_region.textContent = ""
+			region.id = "speak-" + Date.now();
+			document.body.appendChild(region);
+		}
+		window.setTimeout(() => {region.textContent = message;}, 100);
+		if (reannounce) {
+			window.setTimeout(() => {
+				document.body.removeChild(region);
+			}, 1000);
+		}
 	}
+
 	handle_focus_exit() {
 		window.canvas.removeAttribute("aria-owns")
 		this.set_active_descendant()

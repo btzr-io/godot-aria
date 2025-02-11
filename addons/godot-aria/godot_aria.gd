@@ -142,17 +142,17 @@ func unfocus_canvas() -> void:
 	if OS.has_feature("web") and aria_proxy != null:
 		aria_proxy.unfocus_canvas()
 	
-func notify_screen_reader(message,lang : String = TranslationServer.get_locale()) -> void:
+func notify_screen_reader(message, reannounce : bool = false, lang : String = TranslationServer.get_locale()) -> void:
 	if OS.has_feature("web") and aria_proxy != null:
 		var format_message = parse_message(message)
 		debug_log("Speak: " + format_message)
-		aria_proxy.update_aria_region(format_message, "polite", lang)
+		aria_proxy.update_live_region(format_message, "polite", reannounce, lang)
 		
-func alert_screen_reader(message, lang : String = TranslationServer.get_locale()) -> void:
+func alert_screen_reader(message,reannounce : bool = false, lang : String = TranslationServer.get_locale()) -> void:
 	if OS.has_feature("web") and aria_proxy != null:
 		var format_message = parse_message(message)
 		debug_log("Alert: " + str(message))
-		aria_proxy.update_aria_region(format_message, "assertive", lang)
+		aria_proxy.update_live_region(format_message, "assertive", reannounce, lang)
 
 func get_media_feature(feature: String):
 	if OS.has_feature("web") and aria_proxy != null and feature:
