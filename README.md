@@ -17,7 +17,7 @@ A plugin for creating accessible rich internet applications with godot.
 ### Current screen reader support:
 - NVDA for Windows works very well across all major browsers ( Chrome based and Firefox ).  
 - JAWS for Window works better with Google chrome or similar browsers (Brave, Edge, Opera).
-- ORCA for Linux works well with chrome based browsers and firefox.
+- ORCA for Linux works well with Firefox, Google chrome will not announce live region updates.
 
 ### Planned support:
 - Voice over for MacOs
