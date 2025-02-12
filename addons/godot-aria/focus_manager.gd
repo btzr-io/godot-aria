@@ -20,9 +20,6 @@ func _init(current_tree, current_viewport)  -> void:
 	viewport = current_viewport
 	viewport.gui_focus_changed.connect(self.handle_focus_changed)
 
-func release_focus():
-	viewport.gui_release_focus()
-
 func has_focus():
 	if !OS.has_feature("web"): return
 	return viewport.gui_get_focus_owner() != null

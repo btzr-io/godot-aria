@@ -29,14 +29,11 @@ static  func get_viewport_css_transform(canvas: Viewport) -> Dictionary:
 	}
 	return result
 
-	
 static func get_control_css_transform(control: Control, parent_control: Variant):
 	var real_transform : Transform2D = control.get_global_transform_with_canvas()
 	var real_scale : Vector2 = real_transform.get_scale()
 	var real_position : Vector2 = real_transform.origin
-	
 
-	
 	# Nested content
 	if parent_control:
 		var parent_transform : Transform2D = parent_control.get_global_transform_with_canvas()

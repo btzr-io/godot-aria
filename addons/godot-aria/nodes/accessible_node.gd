@@ -96,17 +96,18 @@ func _get_text_content() -> String:
 
 func _get_role_template() -> Variant:
 	if !role: return
-	
+
 	# Use container role only for actual container nodes:
 	if CONTAINER_ROLES.has(role):
 		if container is not Container:
 			return
-			
+
 	var template = {
 		"id": _get_id(),
 		"tag": "div",
 		"props": {}
 	}
+	
 	# Semantic HTML templates
 	# <h1>...<h6>
 	if role == "heading":
@@ -114,7 +115,7 @@ func _get_role_template() -> Variant:
 		if "aria_level" in container:
 			template["tag"] = "h" + str(container.aria_level)
 			template["props"]["textContent"] = _get_text_content()
-	
+
 	# <p>text...</p>
 	if role == "paragraph":
 		if is_content_for_reading_mode():
@@ -123,7 +124,7 @@ func _get_role_template() -> Variant:
 		else:
 			template["props"]["role"] = "presentation"
 			template["props"]["ariaDescription"] = _get_text_content()
-			
+
 	# Generic ARIA templates
 	# <div role={role} aria-label={ariaLabel}></div>
 	if  role not in TEXT_ROLES:
@@ -131,19 +132,19 @@ func _get_role_template() -> Variant:
 		template['props']['tabIndex'] = -1
 		if !label.is_empty():
 			template["props"]["ariaLabel"] = label
-			
+
 	# Generic button template
 	if container is BaseButton:
 		template['tag'] = 'buttton'
 		if role == "button" and container.toggle_mode:
 			template["props"]["ariaPressed"] = container.button_pressed
-	
+
 	# Checkbox template
 	if role == "checkbox" or role == "switch":
 		template["props"]["ariaChecked"] = false
 		if container is BaseButton:
 			template["props"]["ariaChecked"] = container.button_pressed
-			
+
 	# Slider template
 	if RANGE_ROLES.has(role):
 		if container is Range:
@@ -174,7 +175,7 @@ func _get_container_orientation() -> String:
 	if container is VSlider:
 		return "vertical"
 	return "horizontal"
-	
+
 func _get_configuration_warnings() -> PackedStringArray:
 	var parent = get_parent()
 	if parent is Control:
@@ -193,14 +194,14 @@ func _enter_tree() -> void:
 	var default_label = _get_label()
 	if default_role: role = default_role
 	if default_label: label = default_label
-	
+
 	if GODOT_ARIA_UTILS.is_web() and role:
 		if container is Control:
 			container.mouse_exited.connect(handle_mouse_exited)
 			container.mouse_entered.connect(handle_mouse_entered)
 			container.focus_entered.connect(handle_focus)
 			container.focus_exited.connect(handle_unfocus)
-			
+
 			if parent is Control:
 				parent.item_rect_changed.connect(handle_parent_rect_changed)
 			container.item_rect_changed.connect(handle_item_rect_changed)
@@ -219,7 +220,7 @@ func _enter_tree() -> void:
 			if container is Range:
 				input_ref.element.addEventListener('input', handle_html_value_changed_cb)
 			handle_visibility()
-			
+
 func handle_mouse_entered():
 	is_hovered = true
 
@@ -253,13 +254,14 @@ func handle_html_click(args):
 		else:
 			container.pressed.emit()
 			container._pressed()
+
 func handle_html_value_changed(args):
 	var event = args[0]
 	# Focus on interaction
 	if !container.has_focus(): container.grab_focus()
 	if 'value' in container:
 		container.value = float(event.target.value)
-	
+
 func _get_parent_element() -> Variant:
 	parent_control = GODOT_ARIA_UTILS.get_parent_in_accesibility_tree(container)
 	parent_module = GodotARIA.get_accessible_node(parent_control)
@@ -273,7 +275,7 @@ func _get_parent_element() -> Variant:
 
 func handle_focus() -> void:
 	if GODOT_ARIA_UTILS.is_web():
-		if input_ref: 
+		if input_ref:
 			GodotARIA.aria_proxy.set_active_descendant(input_ref.element.id)
 
 func handle_unfocus() -> void:
@@ -286,14 +288,13 @@ func handle_toggled(toggled_on) -> void:
 		input_ref.element['ariaPressed'] = toggled_on
 	if role == "checkbox" or role== "switch":
 		input_ref.element['ariaChecked'] = toggled_on
-		
-		
+
 func handle_value_changed(new_value) -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		if 'value' in container:
 			input_ref.element.value  = new_value
 			input_ref.element['ariaValueNow'] = new_value
-			
+
 func _notification(what: int) -> void:
 		if what == NOTIFICATION_PREDELETE:
 			if GODOT_ARIA_UTILS.is_web(): input_ref.free()
@@ -304,12 +305,12 @@ func _ready() -> void:
 		update_property("", "")
 		await(get_tree().process_frame)
 		update_element_area()
-		
+
 func update_property(prop_name : String, prop_value: Variant) -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		if input_ref and input_ref.element:
 			input_ref.element[prop_name] = prop_value
-			
+
 func update_element_area() -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		element_transform = GODOT_ARIA_UTILS.get_control_css_transform(container, parent_control)

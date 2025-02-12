@@ -193,8 +193,7 @@ func update_text_font() -> void:
 		set_css_property('--text_size', str(text_size) + 'px')
 	if text_font:
 		set_css_property('--text_font', str(text_font))
-		
-		
+
 func handle_visibility():
 	var is_visible: bool = is_visible_in_tree()
 	input_ref.update_style({'display': 'block' if is_visible else 'none'})
