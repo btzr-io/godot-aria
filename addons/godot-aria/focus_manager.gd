@@ -20,23 +20,21 @@ func _init(current_tree, current_viewport)  -> void:
 	viewport = current_viewport
 	viewport.gui_focus_changed.connect(self.handle_focus_changed)
 
+func release_focus():
+	viewport.gui_release_focus()
+
 func has_focus():
 	if !OS.has_feature("web"): return
 	return viewport.gui_get_focus_owner() != null
 
+func has_initial_focus_target() -> bool:
+	scan_focus_list()
+	return !focus_list.is_empty()
+	
 func scan_focus_list():
 	if !OS.has_feature("web"): return
 	focus_list.clear()
 	GODOT_ARIA_UTILS.get_focusable_controls(tree.current_scene, focus_list)
-
-func find_auto_focus_list():
-	if !OS.has_feature("web"): return
-	return focus_list.filter(
-		func(item: Control) -> bool:
-			if "auto_focus" in item:
-				return item.auto_focus
-			return false
-	)
 
 func focus_end() -> void:
 	if !OS.has_feature("web"): return
@@ -66,7 +64,6 @@ func restore_focus(focus_position = "START") -> void:
 		if last_focus and prev_focus:
 			prev_focus.grab_focus()
 
-
 func trap_focus():
 	if !OS.has_feature("web"): return
 	if GodotARIA.aria_proxy:
@@ -90,4 +87,5 @@ func handle_focus_changed(control: Control):
 		trap_next_focus = false
 	
 	if GodotARIA.aria_proxy:
+		GodotARIA.aria_proxy.focus_enter_position = ""
 		GodotARIA.aria_proxy.update_trap_focus(trap_prev_focus, trap_next_focus)

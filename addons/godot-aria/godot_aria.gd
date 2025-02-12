@@ -60,7 +60,7 @@ func _draw() -> void:
 		overlay_transform.scale_x,
 		overlay_transform.scale_y
 	)
-	
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
 		debug_log("canvas: focus")
@@ -69,7 +69,7 @@ func _notification(what: int) -> void:
 				if !focus_manager.has_focus():
 					focus_manager.restore_focus("START")
 				else:
-					focus_manager.restore_focus("NEXT")	
+					focus_manager.restore_focus("NEXT")
 			elif !focus_manager.has_focus():
 				focus_manager.trap_focus()
 				if aria_proxy.focus_enter_position:
@@ -77,41 +77,55 @@ func _notification(what: int) -> void:
 				
 func _input(event: InputEvent) -> void:
 	if !OS.has_feature("web") or !aria_proxy: return
-	if event.is_action_pressed("ui_focus_prev", true):
-		if aria_proxy.focus_enter_position == "PREV":
-			focus_manager.restore_focus("PREV")
+	
+	# Restore focus with arrowkeys 
+	
+	if event.is_action_pressed("ui_down", true):
+		if !focus_manager.has_focus():
+			focus_manager.restore_focus("START")
+			# Prevent default behavior
 			get_viewport().set_input_as_handled()
 			return
+			
+	if event.is_action_pressed("ui_up", true):
 		if !focus_manager.has_focus():
 			focus_manager.restore_focus("END")
 			# Prevent default behavior
 			get_viewport().set_input_as_handled()
 			return
-		if !focus_manager.trap_prev_focus:
+			
+	# Restore focus with tab and shift + tab
+	
+	if event.is_action_pressed("ui_focus_prev", true):
+		if !focus_manager.has_focus():
+			focus_manager.restore_focus("END")
 			# Prevent default behavior
 			get_viewport().set_input_as_handled()
-			get_viewport().gui_release_focus()
-	
-	elif event.is_action_pressed("ui_focus_next", true):
-		if aria_proxy.focus_enter_position == "NEXT":
-			focus_manager.restore_focus("NEXT")
-			get_viewport().set_input_as_handled()
 			return
+		# Before exit focus
+		if !focus_manager.trap_prev_focus:
+			get_viewport().set_input_as_handled()
+			get_viewport().gui_release_focus()
+			
+	elif event.is_action_pressed("ui_focus_next", true):
 		if !focus_manager.has_focus():
 			focus_manager.restore_focus("START")
 			get_viewport().set_input_as_handled()
 			return
+		# Before exit focus
 		if !focus_manager.trap_next_focus:
 			get_viewport().set_input_as_handled()
 			get_viewport().gui_release_focus()
 
 func handle_node_added(node: Variant):
 	if node is Control:
+		if !focus_manager.has_focus() and node.focus_mode == Control.FOCUS_ALL:
+			focus_manager.trap_focus()
 		# Prevent exposing control to the accessibility tree
 		if "aria_hidden" in node:
 			if node.aria_hidden: return
-		if 'aria_role' in node or AccessibilityModule.is_valid_control(node):
-			var module = AccessibilityModule.new()
+		if 'aria_role' in node or AccessibleNode.is_valid_control(node):
+			var module = AccessibleNode.new()
 			node.add_child(module)
 		
 func _ready() -> void:
@@ -157,4 +171,11 @@ func alert_screen_reader(message,reannounce : bool = false, lang : String = Tran
 func get_media_feature(feature: String):
 	if OS.has_feature("web") and aria_proxy != null and feature:
 		return GodotARIA.aria_proxy.get_media_feature(feature)
+	return null
+	
+func get_accessible_node(node : Control) -> Variant:
+	if !node: return null
+	for child in node.get_children():
+		if child is AccessibleNode:
+			return child
 	return null

@@ -1,9 +1,9 @@
 @tool
 extends Node
-class_name AccessibilityModule
-const ROLES = "button,checkbox,document,heading,meter,paragraph,progressbar,region,slider,switch"
+class_name AccessibleNode
+const ROLES = "button,checkbox,document,group,heading,list,listitem,menu,meter,paragraph,progressbar,region,slider,switch"
 const TEXT_ROLES = ['paragraph', 'heading']
-const CONTAINER_ROLES = ['document', 'region']
+const CONTAINER_ROLES = ['document', 'list', 'group', 'menu', 'region']
 const RANGE_ROLES = ['slider', 'meter', 'progressbar']
 const READING_MODE_CONTAINERS = ['document']
 const INTERACTIVE_ROLES = ["button","checkbox", "switch", "slider", "progressbar", "meter"]
@@ -53,8 +53,8 @@ func is_content_for_reading_mode() -> bool:
 	if container is Control:
 		var scaned : Control = container.get_parent_control()
 		while scaned:
-			var accessibility_module = GODOT_ARIA_UTILS.get_accessibility_module(scaned)
-			if accessibility_module and READING_MODE_CONTAINERS.has(accessibility_module.role):
+			var accessible_node = GodotARIA.get_accessible_node(scaned)
+			if accessible_node and READING_MODE_CONTAINERS.has(accessible_node.role):
 				return true
 			scaned = scaned.get_parent_control()
 	return false
@@ -262,23 +262,19 @@ func handle_html_value_changed(args):
 	
 func _get_parent_element() -> Variant:
 	parent_control = GODOT_ARIA_UTILS.get_parent_in_accesibility_tree(container)
-	parent_module = GODOT_ARIA_UTILS.get_accessibility_module(parent_control)
+	parent_module = GodotARIA.get_accessible_node(parent_control)
 	# Prevent invalid hierarchy
 	if parent_module:
 		# Only text content should be indside reading mode
-		if INTERACTIVE_ROLES.has(role) and parent_module.role == "document":
+		if !TEXT_ROLES.has(role) and parent_module.role == "document":
 			return null
 		return parent_module.input_ref.element
 	return null
 
 func handle_focus() -> void:
 	if GODOT_ARIA_UTILS.is_web():
-		#if role == "paragraph":
-			#var text = _get_text_content()
-			#if text: GodotARIA.notify_screen_reader(text)
 		if input_ref: 
 			GodotARIA.aria_proxy.set_active_descendant(input_ref.element.id)
-
 
 func handle_unfocus() -> void:
 	if GODOT_ARIA_UTILS.is_web() and input_ref:
@@ -305,9 +301,15 @@ func _notification(what: int) -> void:
 func _ready() -> void:
 	# Initial render
 	if GODOT_ARIA_UTILS.is_web():
+		update_property("", "")
 		await(get_tree().process_frame)
 		update_element_area()
-
+		
+func update_property(prop_name : String, prop_value: Variant) -> void:
+	if GODOT_ARIA_UTILS.is_web():
+		if input_ref and input_ref.element:
+			input_ref.element[prop_name] = prop_value
+			
 func update_element_area() -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		element_transform = GODOT_ARIA_UTILS.get_control_css_transform(container, parent_control)

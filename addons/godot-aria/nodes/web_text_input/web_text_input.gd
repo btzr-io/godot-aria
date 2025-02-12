@@ -172,7 +172,7 @@ func _enter_tree() -> void:
 
 func _get_parent_element() -> Variant:
 	parent_control = GODOT_ARIA_UTILS.get_parent_in_accesibility_tree(overlay_target)
-	parent_module = GODOT_ARIA_UTILS.get_accessibility_module(parent_control)
+	parent_module = GodotARIA.get_accessible_node(parent_control)
 	# Prevent invalid hierarchy
 	if parent_module:
 		# Only text content should be indside reading mode

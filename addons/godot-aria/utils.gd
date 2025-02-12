@@ -68,17 +68,10 @@ static func get_parent_in_accesibility_tree(node: Control) -> Variant:
 	if node is Control:
 		var scaned : Control = node.get_parent_control()
 		while scaned:
-			var accessibility_module = GODOT_ARIA_UTILS.get_accessibility_module(scaned)
-			if accessibility_module and AccessibilityModule.CONTAINER_ROLES.has(accessibility_module.role):
+			var accessible_node = GodotARIA.get_accessible_node(scaned)
+			if accessible_node and AccessibleNode.CONTAINER_ROLES.has(accessible_node.role):
 				return scaned
 			scaned = scaned.get_parent_control()
-	return null
-	
-static  func get_accessibility_module(node : Control) -> Variant:
-	if !node: return null
-	for child in node.get_children():
-		if child is AccessibilityModule:
-			return child
 	return null
 	
 static func get_modulate_in_tree(item: CanvasItem) -> Color:
