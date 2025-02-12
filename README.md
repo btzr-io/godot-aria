@@ -46,7 +46,7 @@ See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tu
 
 ## Usage
 
-### Aria variables
+### Accessible Node
 Text content and some interactive controls will be automatically exposed to the accesibility tree as hidden dom elements with aria role and attributes:
 - Button -> role='button'
 - Checkbox -> role='checkbox'
@@ -55,9 +55,11 @@ Text content and some interactive controls will be automatically exposed to the 
 - Progressbar -> role='progressbar'
 - Slider -> role='slider'
 
-Declaring aria_* prefixed variables indside a control node will add or overwrite the initial value of an aria attribute of the hidden dom element.
+Declaring aria_* prefixed variables indside a control node will set or overwrite the initial value of an aria attribute of the hidden dom element.
+To update an aria value or any property of the hidden dom element use the AccessibleNode.update_property method:
 
 ### Examples
+
 Custom label:
 ```gdscript
 extends Button
@@ -91,6 +93,20 @@ var aria_role = "heading"
 var aria_level = 1
 ```
 
+
+Update a value:
+```gdscript
+extends Button
+
+@onready var accessible_node = GodotAria.get_accesible_node(self)
+
+# By default Label and RichText label are exposed with the 'paragraph' role
+var aria_label = "An accessible name" :
+  set(value):
+    aria_label = value
+    accessible_node.update_property("ariaLabel", value)
+```
+
 ### Additional utilities
 Use the global class `GodotARIA` to call utility functions. 
 
@@ -104,6 +120,12 @@ Focus the current canvas element.
 Remove focus of the current canvas element.
 ```py
   GodotARIA.unfocus_canvas()
+```
+### GodotARIA.get_accessible_node
+Retrives the AccessibleNode of a control exposed to the accesibility tree.
+You can use this to interact or update the hidden dom element associated with the target control.
+```
+GodotARIA.get_accessible_node(target: Control) -> AccessibleNode
 ```
 
 ### GodotARIA.notify_screen_reader
