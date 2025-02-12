@@ -47,6 +47,8 @@ See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tu
 ## Usage
 
 ### Accessible Node
+A control exposed to the accessiblity tree has an AccessibleNode as a child.
+
 Text content and some interactive controls will be automatically exposed to the accesibility tree as hidden dom elements with aria role and attributes:
 - Button -> role='button'
 - Checkbox -> role='checkbox'
@@ -55,8 +57,28 @@ Text content and some interactive controls will be automatically exposed to the 
 - Progressbar -> role='progressbar'
 - Slider -> role='slider'
 
+To expose other controls to the accesibiliy tree make sure to declare the aria_role variable:
+```gdscript
+extends Container
+
+# Declaring a valid aria role will expose the control to the accesibility tree
+var aria_role = "region"
+```
+
 Declaring aria_* prefixed variables indside a control node will set or overwrite the initial value of an aria attribute of the hidden dom element.
+
 To update an aria value or any property of the hidden dom element use the AccessibleNode.update_property method:
+```gdscript
+extends Button
+
+@onready var accessible_node = GodotAria.get_accesible_node(self)
+
+# By default Label and RichText label are exposed with the 'paragraph' role
+var aria_label = "An accessible name" :
+  set(value):
+    aria_label = value
+    accessible_node.update_property("ariaLabel", value)
+```
 
 ### Examples
 
@@ -75,15 +97,6 @@ extends Button
 var aria_hidden = true
 ```
 
-Expose a non interactive Control node:
-```gdscript
-extends Container
-
-# Declaring a valid aria role will expose the control to the accesibility tree
-var aria_role = "region"
-var aria_label = "The region name..."
-```
-
 Custom role:
 ```gdscript
 extends Label
@@ -91,20 +104,6 @@ extends Label
 # By default Label and RichText label are exposed with the 'paragraph' role
 var aria_role = "heading"
 var aria_level = 1
-```
-
-
-Update a value:
-```gdscript
-extends Button
-
-@onready var accessible_node = GodotAria.get_accesible_node(self)
-
-# By default Label and RichText label are exposed with the 'paragraph' role
-var aria_label = "An accessible name" :
-  set(value):
-    aria_label = value
-    accessible_node.update_property("ariaLabel", value)
 ```
 
 ### Additional utilities
@@ -124,7 +123,7 @@ Remove focus of the current canvas element.
 ### GodotARIA.get_accessible_node
 Retrives the AccessibleNode of a control exposed to the accesibility tree.
 You can use this to interact or update the hidden dom element associated with the target control.
-```
+```py
 GodotARIA.get_accessible_node(target: Control) -> AccessibleNode
 ```
 
