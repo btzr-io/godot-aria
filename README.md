@@ -31,15 +31,12 @@ See: [Installing a plugin](https://docs.godotengine.org/en/stable/tutorials/plug
 > [!warning]
 > The default godot web export HTML page has accessibility [issues](https://github.com/btzr-io/godot-aria/issues/4) and is not compatible with this pluign.
 
+This repository provides a more accessible HTML page that can serve as a starting point: [godot_aria_shell.html](https://github.com/btzr-io/godot-aria/blob/main/addons/godot-aria/godot_aria_shell.html)
+
 Before you can use this addon you need to make some quick changes to the export settings:
 
-- This repository provides a more accessible HTML page that can serve as a starting point: [godot_aria_shell.html](https://github.com/btzr-io/godot-aria/blob/main/addons/godot-aria/godot_aria_shell.html)
-
-- Auto focus behavior is not recommended, the user should decide when to enter focus ( click or tab navigation ).
-  
 ```shell
 Export > html/custom_html_shell: "res://addons/godot-aria/godot_aria_shell.html"
-Export > html/focus_canvas_on_start: false
 ```
 
 See: [Custom HTML page for Web export](https://docs.godotengine.org/en/stable/tutorials/platform/web/customizing_html5_shell.html#custom-html-page-for-web-export)
