@@ -12,6 +12,7 @@ var content_scene = preload("./content.tscn")
 
 signal on_input(event: JavaScriptObject)
 signal on_change(event: JavaScriptObject)
+signal on_keydown(event: JavaScriptObject)
 
 const INPUT_TYPES = "text,email,date,date-local,month,number,password,tel,time,search,url,week"
 const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
@@ -248,6 +249,9 @@ func handle_html_keydown(args):
 			
 		elif html_event.key == "Tab" and !html_event.shiftKey:
 			godot_aria.focus_manager.restore_focus("NEXT")
+	
+	# Expose signal for html event
+	on_keydown.emit(html_event)
 	
 func _notification(what: int) -> void:
 	if GODOT_ARIA_UTILS.is_web():
