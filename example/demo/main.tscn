@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://clofup1uh0coq"]
+[gd_scene load_steps=8 format=3 uid="uid://clofup1uh0coq"]
 
 [ext_resource type="Script" path="res://example/main.gd" id="1_8b57x"]
 [ext_resource type="Script" path="res://example/demo/heading.gd" id="2_w5ef5"]
 [ext_resource type="Script" path="res://example/demo/button.gd" id="3_p2gpr"]
 [ext_resource type="Script" path="res://example/demo/slider.gd" id="4_m2jlx"]
 [ext_resource type="Script" path="res://example/demo/progress_bar.gd" id="5_8c68p"]
+[ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="6_1ro7k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a5a0x"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_8b57x")
@@ -79,3 +82,12 @@ custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 text = "Last action"
 script = ExtResource("3_p2gpr")
+
+[node name="WebTextInput" type="PanelContainer" parent="UI/Demo/Content"]
+clip_contents = true
+custom_minimum_size = Vector2(100, 24)
+layout_mode = 2
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_a5a0x")
+script = ExtResource("6_1ro7k")
+id = "input-text"

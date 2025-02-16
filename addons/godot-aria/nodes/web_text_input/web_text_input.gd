@@ -221,9 +221,15 @@ func handle_blur():
 
 func handle_html_focus(args):
 	grab_focus()
+	if godot_aria:
+		godot_aria.aria_proxy.canvas.tabIndex = -1
+		godot_aria.aria_proxy.toggle_focus_redirect(false)
 
 func handle_html_focusout(args):
 	release_focus()
+	if godot_aria:
+		godot_aria.aria_proxy.canvas.tabIndex = 0
+		godot_aria.aria_proxy.toggle_focus_redirect(true)
 
 func handle_html_input(args):
 	on_input.emit(args[0])
@@ -234,6 +240,7 @@ func handle_html_change(args):
 func handle_html_keydown(args):
 	var html_event : JavaScriptObject = args[0]
 	var prevent_arrow_keys = false
+	
 	if godot_aria.aria_proxy.is_focus_trap(html_event, prevent_arrow_keys):
 		html_event.preventDefault()
 		if html_event.key == "Tab" and html_event.shiftKey:
@@ -241,7 +248,7 @@ func handle_html_keydown(args):
 			
 		elif html_event.key == "Tab" and !html_event.shiftKey:
 			godot_aria.focus_manager.restore_focus("NEXT")
-			
+	
 func _notification(what: int) -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		if what == NOTIFICATION_PREDELETE and input_ref:
