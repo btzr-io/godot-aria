@@ -244,7 +244,7 @@ func handle_html_keydown(args):
 			
 func _notification(what: int) -> void:
 	if GODOT_ARIA_UTILS.is_web():
-		if what == NOTIFICATION_PREDELETE:
+		if what == NOTIFICATION_PREDELETE and input_ref:
 			input_ref.free()
 		if what == NOTIFICATION_TRANSFORM_CHANGED:
 			force_redraw()
