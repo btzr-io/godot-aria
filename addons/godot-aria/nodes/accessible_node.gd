@@ -304,7 +304,8 @@ func handle_value_changed(new_value) -> void:
 
 func _notification(what: int) -> void:
 		if what == NOTIFICATION_PREDELETE:
-			if GODOT_ARIA_UTILS.is_web(): input_ref.free()
+			if GODOT_ARIA_UTILS.is_web() and input_ref: 
+				input_ref.free()
 
 func _ready() -> void:
 	# Initial render
