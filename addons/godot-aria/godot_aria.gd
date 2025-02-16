@@ -1,4 +1,4 @@
-extends Node2D                                                                                                                                                                                                                                                                                                                                                                                                                       
+extends Node2D
 # Global javascript interface:
 # Accessible from window.GODOT_ARIA_PROXY on the browser.
 var aria_proxy : JavaScriptObject = JavaScriptBridge.get_interface("GODOT_ARIA_PROXY")
@@ -18,24 +18,6 @@ var focus_manager : FocusManager
 # VisualViewport API
 var visual_viewport : JavaScriptObject
 
-class HTML_REF extends Object:
-	var id : String
-	var element : JavaScriptObject
-	# Constructor
-	func _init(element_id : String, tag : String = "div",  props : Dictionary = {}, layer = "overlay", parent_element = null):
-		var initProps : JavaScriptObject = GODOT_ARIA_UTILS.dictionary_to_js(props)
-		id = element_id
-		element = GodotARIA.aria_proxy.create_element_reference(tag, id, initProps, layer, parent_element)
-	# Destructor
-	func _notification(what: int) -> void:
-		if what == NOTIFICATION_PREDELETE:
-			GodotARIA.aria_proxy.remove_element_reference(id)
-	# Metods
-	func update_props(props : Dictionary = {}): 
-		GODOT_ARIA_UTILS.dictionary_to_js(props, element)
-	func update_style(styles : Dictionary = {}): 
-		GODOT_ARIA_UTILS.dictionary_to_js(styles, element.style)
-
 func _enter_tree() -> void:
 	if !OS.has_feature("web"): return
 	focus_manager = FocusManager.new(get_tree(), get_viewport())
@@ -45,14 +27,14 @@ func _enter_tree() -> void:
 	
 func _process(delta: float) -> void:
 	if !GODOT_ARIA_UTILS.is_web(): return
-	overlay_transform = GODOT_ARIA_UTILS.get_viewport_css_transform(get_tree().root)
+	overlay_transform = get_viewport_css_transform(get_tree().root)
 	if overlay_transform.hash() != prev_overlay_transform.hash():
 		prev_overlay_transform = overlay_transform
 		queue_redraw()
 
 func _draw() -> void:
-	if !overlay_transform: return
-	GodotARIA.aria_proxy.sync_dom(
+	if !overlay_transform or !aria_proxy: return
+	aria_proxy.sync_dom(
 		overlay_transform.top,
 		overlay_transform.left,
 		overlay_transform.width,
@@ -170,7 +152,7 @@ func alert_screen_reader(message,reannounce : bool = false, lang : String = Tran
 
 func get_media_feature(feature: String):
 	if OS.has_feature("web") and aria_proxy != null and feature:
-		return GodotARIA.aria_proxy.get_media_feature(feature)
+		return aria_proxy.get_media_feature(feature)
 	return null
 	
 func get_accessible_node(node : Control) -> Variant:
@@ -179,3 +161,29 @@ func get_accessible_node(node : Control) -> Variant:
 		if child is AccessibleNode:
 			return child
 	return null
+
+func get_parent_in_accesibility_tree(node: Control) -> Variant:
+	if node is Control:
+		var scaned : Control = node.get_parent_control()
+		while scaned:
+			var accessible_node = get_accessible_node(scaned)
+			if accessible_node and AccessibleNode.CONTAINER_ROLES.has(accessible_node.role):
+				return scaned
+			scaned = scaned.get_parent_control()
+	return null
+
+func get_viewport_css_transform(canvas: Viewport) -> Dictionary:
+	var t : Transform2D = canvas.get_screen_transform()
+	var size : Vector2 = canvas.get_visible_rect().size
+	var screen_scale : float = DisplayServer.screen_get_scale()
+	var final_size_x : float = ceil(size.x * (t.x.x / screen_scale))
+	var final_size_y : float = ceil(size.y * (t.y.y / screen_scale))
+	var result : Dictionary = {
+		top = (visual_viewport.height * 0.5) - (size.y * 0.5),
+		left = (visual_viewport.width * 0.5) - (size.x * 0.5),
+		width = ceil(size.x),
+		height = ceil(size.y),
+		scale_x = snapped(final_size_x / ceil(size.x), 0.001),
+		scale_y = snapped(final_size_y / ceil(size.y), 0.001)
+	}
+	return result

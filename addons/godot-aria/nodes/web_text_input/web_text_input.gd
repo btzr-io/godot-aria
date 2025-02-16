@@ -85,7 +85,7 @@ const INPUT_MODES = "none,text,email,decimal,numeric,tel,search,url"
 
 var box : PanelContainer
 var overlay_target : Label
-var input_ref : GodotARIA.HTML_REF
+var input_ref : HtmlReference
 var parent_control : Variant
 var parent_module : Variant
 var parent_element : JavaScriptObject
@@ -99,14 +99,15 @@ var html_keydown_cb = JavaScriptBridge.create_callback(handle_html_keydown)
 # Cache transforms
 var element_transform : Dictionary
 var prev_element_transform : Dictionary = {}
+var godot_aria : Variant
 
 func set_style(new_style):
 	if box and new_style:
 		box.add_theme_stylebox_override('panel', new_style)
 
 func has_html_focus() -> bool :
-	if GODOT_ARIA_UTILS.is_web() and input_ref and input_ref.element:
-		return GodotARIA.aria_proxy.has_focus(input_ref.element)
+	if GODOT_ARIA_UTILS.is_web() and godot_aria and input_ref and input_ref.element:
+		return godot_aria.aria_proxy.has_focus(input_ref.element)
 	return false
 	
 func set_css_property(property_name, property_value):
@@ -116,6 +117,10 @@ func set_css_property(property_name, property_value):
 			formated = GODOT_ARIA_UTILS.to_css_color(formated)
 		input_ref.element.style.setProperty(property_name, formated)
 
+func _init():
+	if GODOT_ARIA_UTILS.is_web():
+		godot_aria = GODOT_ARIA_UTILS.get_safe_autoload()
+		
 func _enter_tree() -> void:
 	# Don't render for non web builds
 	if !Engine.is_editor_hint() and !OS.has_feature("web"):
@@ -161,7 +166,7 @@ func _enter_tree() -> void:
 			init_props['autocomplete'] = auto_complete
 		# Html element reference
 		parent_element = _get_parent_element()
-		input_ref = GodotARIA.HTML_REF.new(id, "input", init_props, "overlay", parent_element)
+		input_ref = HtmlReference.new(id, "input", init_props, "overlay", parent_element)
 		input_ref.element.addEventListener("focus", html_focus_cb)
 		input_ref.element.addEventListener("focusout", html_focusout_cb)
 		input_ref.element.addEventListener("input", html_input_cb)
@@ -171,8 +176,9 @@ func _enter_tree() -> void:
 		handle_visibility()
 
 func _get_parent_element() -> Variant:
-	parent_control = GODOT_ARIA_UTILS.get_parent_in_accesibility_tree(overlay_target)
-	parent_module = GodotARIA.get_accessible_node(parent_control)
+	if !godot_aria: return null
+	parent_control = godot_aria.get_parent_in_accesibility_tree(overlay_target)
+	parent_module = godot_aria.get_accessible_node(parent_control)
 	# Prevent invalid hierarchy
 	if parent_module:
 		# Only text content should be indside reading mode
@@ -201,13 +207,14 @@ func handle_visibility():
 func handle_focus() -> void:
 	if disabled: return
 	set_style(focus_style)
-	if GODOT_ARIA_UTILS.is_web():
+	if GODOT_ARIA_UTILS.is_web() and godot_aria:
 		input_ref.element.focus()
-		GodotARIA.aria_proxy.set_active_descendant()
+		godot_aria.aria_proxy.set_active_descendant()
 
 func handle_blur():
-	input_ref.element.blur()
-	GodotARIA.focus_canvas()
+	if godot_aria:
+		input_ref.element.blur()
+		godot_aria.focus_canvas()
 
 	if disabled: return
 	set_style(normal_style)
@@ -227,13 +234,13 @@ func handle_html_change(args):
 func handle_html_keydown(args):
 	var html_event : JavaScriptObject = args[0]
 	var prevent_arrow_keys = false
-	if GodotARIA.aria_proxy.is_focus_trap(html_event, prevent_arrow_keys):
+	if godot_aria.aria_proxy.is_focus_trap(html_event, prevent_arrow_keys):
 		html_event.preventDefault()
 		if html_event.key == "Tab" and html_event.shiftKey:
-			GodotARIA.focus_manager.restore_focus("PREV")
+			godot_aria.focus_manager.restore_focus("PREV")
 			
 		elif html_event.key == "Tab" and !html_event.shiftKey:
-			GodotARIA.focus_manager.restore_focus("NEXT")
+			godot_aria.focus_manager.restore_focus("NEXT")
 			
 func _notification(what: int) -> void:
 	if GODOT_ARIA_UTILS.is_web():
@@ -250,7 +257,7 @@ func force_redraw():
 		
 func _draw() -> void:
 	if !GODOT_ARIA_UTILS.is_web() or !element_transform: return
-	GodotARIA.aria_proxy.redraw_element(
+	godot_aria.aria_proxy.redraw_element(
 		input_ref.element,
 		GODOT_ARIA_UTILS.dictionary_to_js(element_transform),
 		GODOT_ARIA_UTILS.get_modulate_in_tree(overlay_target)

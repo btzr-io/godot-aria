@@ -13,22 +13,6 @@ static func dictionary_to_js(data: Dictionary, target : JavaScriptObject = null)
 		result[key] = data[key]
 	return result
 
-static  func get_viewport_css_transform(canvas: Viewport) -> Dictionary:
-	var t : Transform2D = canvas.get_screen_transform()
-	var size : Vector2 = canvas.get_visible_rect().size
-	var screen_scale : float = DisplayServer.screen_get_scale()
-	var final_size_x : float = ceil(size.x * (t.x.x / screen_scale))
-	var final_size_y : float = ceil(size.y * (t.y.y / screen_scale))
-	var result : Dictionary = {
-		top = (GodotARIA.visual_viewport.height * 0.5) - (size.y * 0.5),
-		left = (GodotARIA.visual_viewport.width * 0.5) - (size.x * 0.5),
-		width = ceil(size.x),
-		height = ceil(size.y),
-		scale_x = snapped(final_size_x / ceil(size.x), 0.001),
-		scale_y = snapped(final_size_y / ceil(size.y), 0.001)
-	}
-	return result
-
 static func get_control_css_transform(control: Control, parent_control: Variant):
 	var real_transform : Transform2D = control.get_global_transform_with_canvas()
 	var real_scale : Vector2 = real_transform.get_scale()
@@ -61,16 +45,6 @@ static func get_focusable_controls(node: Node, list = []) -> void:
 		if child.get_child_count() > 0:
 			get_focusable_controls(child, list)
 
-static func get_parent_in_accesibility_tree(node: Control) -> Variant:
-	if node is Control:
-		var scaned : Control = node.get_parent_control()
-		while scaned:
-			var accessible_node = GodotARIA.get_accessible_node(scaned)
-			if accessible_node and AccessibleNode.CONTAINER_ROLES.has(accessible_node.role):
-				return scaned
-			scaned = scaned.get_parent_control()
-	return null
-	
 static func get_modulate_in_tree(item: CanvasItem) -> Color:
 	var container = item.get_parent()
 	var modulate_in_tree : Color = item.modulate * item.self_modulate
@@ -81,3 +55,6 @@ static func get_modulate_in_tree(item: CanvasItem) -> Color:
 		else:
 			container = null
 	return modulate_in_tree
+
+static func get_safe_autoload():
+	return Engine.get_main_loop().root.get_node_or_null("GodotARIA")

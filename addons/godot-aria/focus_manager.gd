@@ -13,12 +13,15 @@ var next_focus : Control
 var prev_focus : Control
 var last_focus : Control
 
+var godot_aria : Variant
+
 # Called when the node enters the scene tree for the first time.
 func _init(current_tree, current_viewport)  -> void:
 	if !OS.has_feature("web"): return
 	tree = current_tree
 	viewport = current_viewport
 	viewport.gui_focus_changed.connect(self.handle_focus_changed)
+	godot_aria = GODOT_ARIA_UTILS.get_safe_autoload()
 
 func has_focus():
 	if !OS.has_feature("web"): return
@@ -63,10 +66,10 @@ func restore_focus(focus_position = "START") -> void:
 
 func trap_focus():
 	if !OS.has_feature("web"): return
-	if GodotARIA.aria_proxy:
+	if godot_aria and godot_aria.aria_proxy:
 		trap_next_focus = true
 		trap_prev_focus = true
-		GodotARIA.aria_proxy.update_trap_focus(true, true)
+		godot_aria.aria_proxy.update_trap_focus(true, true)
 
 func handle_focus_changed(control: Control):
 	if !OS.has_feature("web"): return
@@ -83,6 +86,6 @@ func handle_focus_changed(control: Control):
 		trap_prev_focus = false
 		trap_next_focus = false
 	
-	if GodotARIA.aria_proxy:
-		GodotARIA.aria_proxy.focus_enter_position = ""
-		GodotARIA.aria_proxy.update_trap_focus(trap_prev_focus, trap_next_focus)
+	if godot_aria and godot_aria.aria_proxy:
+		godot_aria.aria_proxy.focus_enter_position = ""
+		godot_aria.aria_proxy.update_trap_focus(trap_prev_focus, trap_next_focus)

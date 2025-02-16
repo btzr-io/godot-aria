@@ -33,6 +33,7 @@ var parent_element : Variant
 var parent_control : Variant
 var parent_module : Variant
 var element_transform : Dictionary
+var godot_aria : Variant
 
 # HTML EVENTS
 var handle_html_click_cb = JavaScriptBridge.create_callback(handle_html_click)
@@ -48,12 +49,14 @@ static func is_valid_control(control: Control) -> bool:
 	return false
 
 func is_content_for_reading_mode() -> bool:
+	if !godot_aria or !godot_aria.aria_proxy:
+		return false
 	if INTERACTIVE_ROLES.has(role):
 		return false
 	if container is Control:
 		var scaned : Control = container.get_parent_control()
 		while scaned:
-			var accessible_node = GodotARIA.get_accessible_node(scaned)
+			var accessible_node = godot_aria.get_accessible_node(scaned)
 			if accessible_node and READING_MODE_CONTAINERS.has(accessible_node.role):
 				return true
 			scaned = scaned.get_parent_control()
@@ -181,7 +184,10 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if parent is Control:
 		return []
 	return ["Use only for Control and inherited types."]
-
+	
+func _init() -> void:
+	godot_aria = GODOT_ARIA_UTILS.get_safe_autoload()
+	
 func _enter_tree() -> void:
 	container = get_parent()
 	if container:
@@ -214,7 +220,7 @@ func _enter_tree() -> void:
 		var template : Variant = _get_role_template()
 		if template:
 			parent_element = _get_parent_element()
-			input_ref = GodotARIA.HTML_REF.new(template["id"], template["tag"], template["props"], "hidden", parent_element)
+			input_ref = HtmlReference.new(template["id"], template["tag"], template["props"], "hidden", parent_element)
 			if container is BaseButton:
 				input_ref.element.addEventListener('click', handle_html_click_cb)
 			if container is Range:
@@ -263,8 +269,9 @@ func handle_html_value_changed(args):
 		container.value = float(event.target.value)
 
 func _get_parent_element() -> Variant:
-	parent_control = GODOT_ARIA_UTILS.get_parent_in_accesibility_tree(container)
-	parent_module = GodotARIA.get_accessible_node(parent_control)
+	if godot_aria:
+		parent_control = godot_aria.get_parent_in_accesibility_tree(container)
+		parent_module = godot_aria.get_accessible_node(parent_control)
 	# Prevent invalid hierarchy
 	if parent_module:
 		# Only text content should be indside reading mode
@@ -275,13 +282,13 @@ func _get_parent_element() -> Variant:
 
 func handle_focus() -> void:
 	if GODOT_ARIA_UTILS.is_web():
-		if input_ref:
-			GodotARIA.aria_proxy.set_active_descendant(input_ref.element.id)
+		if input_ref and godot_aria:
+			godot_aria.aria_proxy.set_active_descendant(input_ref.element.id)
 
 func handle_unfocus() -> void:
 	if GODOT_ARIA_UTILS.is_web() and input_ref:
-			if GodotARIA.aria_proxy.get_active_descendant() == input_ref.element.id:
-				GodotARIA.aria_proxy.set_active_descendant()
+			if godot_aria and godot_aria.aria_proxy.get_active_descendant() == input_ref.element.id:
+				godot_aria.aria_proxy.set_active_descendant()
 
 func handle_toggled(toggled_on) -> void:
 	if role == "button":
@@ -314,8 +321,8 @@ func update_property(prop_name : String, prop_value: Variant) -> void:
 func update_element_area() -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		element_transform = GODOT_ARIA_UTILS.get_control_css_transform(container, parent_control)
-	if !element_transform or !input_ref: return
-	GodotARIA.aria_proxy.redraw_element(
+	if !godot_aria or !element_transform or !input_ref: return
+	godot_aria.aria_proxy.redraw_element(
 		input_ref.element,
 		GODOT_ARIA_UTILS.dictionary_to_js(element_transform),
 		# Opacity is always set to zero for hidden DOM elements except containers:
