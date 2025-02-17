@@ -23,6 +23,11 @@ func _init(current_tree, current_viewport)  -> void:
 	viewport.gui_focus_changed.connect(self.handle_focus_changed)
 	godot_aria = GODOT_ARIA_UTILS.get_safe_autoload()
 
+func update():
+	var current = viewport.gui_get_focus_owner()
+	if current:
+		GodotARIA.focus_manager.handle_focus_changed(current)
+
 func has_focus():
 	if !OS.has_feature("web"): return
 	return viewport.gui_get_focus_owner() != null

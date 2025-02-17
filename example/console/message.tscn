@@ -21,4 +21,6 @@ layout_mode = 2
 mouse_filter = 1
 theme_override_styles/normal = ExtResource("2_oirq6")
 fit_content = true
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
 script = ExtResource("2_iw6sh")

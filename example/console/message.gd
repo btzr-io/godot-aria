@@ -4,6 +4,7 @@ extends PanelContainer
 @onready var content_id = content_accessible_node._get_id()
 @onready var style_normal = preload("res://example/console/styles/message_normal.tres")
 @onready var style_focus = preload("res://example/console/styles/message_focus.tres")
+
 var active : bool = false :
 	set(value):
 		active = value

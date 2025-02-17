@@ -1,8 +1,8 @@
-extends VBoxContainer
+extends PanelContainer
 var message_scene = preload('./message.tscn')
-@onready var message_list : VBoxContainer = $Output/MessageList 
-@onready var input : WebTextInput = $InputContainer/WebTextInput
-@onready var output : ScrollContainer = $Output
+@onready var input : WebTextInput = $Container/InputContainer/WebTextInput
+@onready var output : ScrollContainer = $Container/Output
+@onready var message_list : VBoxContainer = $Container/Output/MessageList 
 
 var last_message
 
@@ -46,10 +46,15 @@ func add_message(message_content: String) -> void:
 	message.get_node("MessageContent").text = message_content
 	message_list.add_child(message)
 	last_message = message
+	if output.focus_mode == FOCUS_NONE:
+		output.focus_mode = FOCUS_ALL
+	GodotARIA.focus_manager.update()
 	GodotARIA.alert_screen_reader(message_content, true)
 	
 func clear_output():
 	last_message = null
 	for message in message_list.get_children():
 		message.free()
+	output.focus_mode = FOCUS_NONE
+	GodotARIA.focus_manager.update()
 	GodotARIA.alert_screen_reader("Console cleared", true)
