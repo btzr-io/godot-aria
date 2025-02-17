@@ -1,0 +1,66 @@
+[gd_scene load_steps=8 format=3 uid="uid://4sehw20g588h"]
+
+[ext_resource type="Script" path="res://example/console/console.gd" id="1_xpa6s"]
+[ext_resource type="Script" path="res://example/console/output.gd" id="2_uu61y"]
+[ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="3_bbyb3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ga1vd"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0, 0, 0, 0.603922)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0mymi"]
+content_margin_left = 0.0
+content_margin_top = 12.0
+content_margin_right = 24.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a01tq"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b2l8r"]
+
+[node name="ConsoleContainer" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ga1vd")
+
+[node name="Console" type="VBoxContainer" parent="."]
+layout_mode = 2
+script = ExtResource("1_xpa6s")
+
+[node name="Output" type="ScrollContainer" parent="Console"]
+custom_minimum_size = Vector2(480, 124)
+layout_mode = 2
+size_flags_vertical = 2
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_0mymi")
+follow_focus = true
+script = ExtResource("2_uu61y")
+
+[node name="MessageList" type="VBoxContainer" parent="Console/Output"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="InputContainer" type="PanelContainer" parent="Console"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_a01tq")
+
+[node name="WebTextInput" type="PanelContainer" parent="Console/InputContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(100, 24)
+layout_mode = 2
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_b2l8r")
+script = ExtResource("3_bbyb3")
+id = "console-input"
+placeholder = "Type command..."
+aria_label = "Input"
+max_length = 64

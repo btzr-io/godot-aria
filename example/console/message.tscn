@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://soevvxd6w5nf"]
+
+[ext_resource type="Script" path="res://example/console/message.gd" id="1_w5u0l"]
+[ext_resource type="Script" path="res://example/console/message_content.gd" id="2_iw6sh"]
+[ext_resource type="StyleBox" uid="uid://5c7op6skfikl" path="res://example/console/styles/message_normal.tres" id="2_oirq6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ndb1"]
+content_margin_left = 12.0
+content_margin_top = 0.0
+content_margin_right = 24.0
+content_margin_bottom = 0.0
+
+[node name="Message" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5ndb1")
+script = ExtResource("1_w5u0l")
+
+[node name="MessageContent" type="RichTextLabel" parent="."]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/normal = ExtResource("2_oirq6")
+fit_content = true
+script = ExtResource("2_iw6sh")
