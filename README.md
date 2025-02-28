@@ -64,7 +64,7 @@ var aria_role = "region"
 
 Declaring aria_* prefixed variables indside a control node will set or overwrite the initial value of an aria attribute of the hidden dom element.
 
-To update an aria value or any property of the hidden dom element use the AccessibleNode.update_property method:
+To update an aria value or any property of the hidden dom element use the [AccessibleNode](#godotariaget_accessible_node) update_property method:
 ```gdscript
 extends Button
 
