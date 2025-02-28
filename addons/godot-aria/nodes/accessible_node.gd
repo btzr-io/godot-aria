@@ -27,7 +27,7 @@ const ARIA_PROPS = {
 var is_hovered : bool = false
 var is_focus_on_click : bool = false
 var container
-var input_ref
+var ref
 var parent : Variant
 var parent_element : Variant
 var parent_control : Variant
@@ -80,6 +80,8 @@ func _get_role() -> String:
 	return ""
 
 func _get_id() -> String:
+	if 'aria_id' in container and container.aria_id is String:
+		return container.aria_id
 	return role + "-" + name + "-" + str(get_instance_id())
 
 func _get_label() -> String:
@@ -110,7 +112,7 @@ func _get_role_template() -> Variant:
 		"tag": "div",
 		"props": {}
 	}
-	
+
 	# Semantic HTML templates
 	# <h1>...<h6>
 	if role == "heading":
@@ -126,7 +128,11 @@ func _get_role_template() -> Variant:
 			template["props"]["textContent"] = _get_text_content()
 		else:
 			template["props"]["role"] = "presentation"
+			template["props"]["textContent"] = _get_text_content()
+			# Speak content on focus
 			template["props"]["ariaDescription"] = _get_text_content()
+			# Prevent NVDA from speaking "section" before reading description
+			template["props"]["ariaRoleDescription"] = " "
 
 	# Generic ARIA templates
 	# <div role={role} aria-label={ariaLabel}></div>
@@ -184,10 +190,10 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if parent is Control:
 		return []
 	return ["Use only for Control and inherited types."]
-	
+
 func _init() -> void:
 	godot_aria = GODOT_ARIA_UTILS.get_safe_autoload()
-	
+
 func _enter_tree() -> void:
 	container = get_parent()
 	if container:
@@ -220,11 +226,11 @@ func _enter_tree() -> void:
 		var template : Variant = _get_role_template()
 		if template:
 			parent_element = _get_parent_element()
-			input_ref = HtmlReference.new(template["id"], template["tag"], template["props"], "hidden", parent_element)
+			ref = HtmlReference.new(template["id"], template["tag"], template["props"], "hidden", parent_element)
 			if container is BaseButton:
-				input_ref.element.addEventListener('click', handle_html_click_cb)
+				ref.element.addEventListener('click', handle_html_click_cb)
 			if container is Range:
-				input_ref.element.addEventListener('input', handle_html_value_changed_cb)
+				ref.element.addEventListener('input', handle_html_value_changed_cb)
 			handle_visibility()
 
 func handle_mouse_entered():
@@ -236,7 +242,7 @@ func handle_mouse_exited():
 func handle_visibility():
 	if GODOT_ARIA_UTILS.is_web():
 		var is_visible: bool = container.is_visible_in_tree()
-		input_ref.update_style({'display': 'block' if is_visible else 'none'})
+		ref.update_style({'display': 'block' if is_visible else 'none'})
 		await(get_tree().process_frame)
 		update_element_area()
 
@@ -277,54 +283,53 @@ func _get_parent_element() -> Variant:
 		# Only text content should be indside reading mode
 		if !TEXT_ROLES.has(role) and parent_module.role == "document":
 			return null
-		return parent_module.input_ref.element
+		return parent_module.ref.element
 	return null
 
 func handle_focus() -> void:
 	if GODOT_ARIA_UTILS.is_web():
-		if input_ref and godot_aria:
-			godot_aria.aria_proxy.set_active_descendant(input_ref.element.id)
+		if ref and godot_aria:
+			godot_aria.aria_proxy.set_active_descendant(ref.element.id)
 
 func handle_unfocus() -> void:
-	if GODOT_ARIA_UTILS.is_web() and input_ref:
-			if godot_aria and godot_aria.aria_proxy.get_active_descendant() == input_ref.element.id:
+	if GODOT_ARIA_UTILS.is_web() and ref:
+			if godot_aria and godot_aria.aria_proxy.get_active_descendant() == ref.element.id:
 				godot_aria.aria_proxy.set_active_descendant()
 
 func handle_toggled(toggled_on) -> void:
 	if role == "button":
-		input_ref.element['ariaPressed'] = toggled_on
+		ref.element['ariaPressed'] = toggled_on
 	if role == "checkbox" or role== "switch":
-		input_ref.element['ariaChecked'] = toggled_on
+		ref.element['ariaChecked'] = toggled_on
 
 func handle_value_changed(new_value) -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		if 'value' in container:
-			input_ref.element.value  = new_value
-			input_ref.element['ariaValueNow'] = new_value
+			ref.element.value  = new_value
+			ref.element['ariaValueNow'] = new_value
 
 func _notification(what: int) -> void:
 		if what == NOTIFICATION_PREDELETE:
-			if GODOT_ARIA_UTILS.is_web() and input_ref: 
-				input_ref.free()
+			if GODOT_ARIA_UTILS.is_web() and ref:
+				ref.free()
 
 func _ready() -> void:
 	# Initial render
 	if GODOT_ARIA_UTILS.is_web():
-		update_property("", "")
 		await(get_tree().process_frame)
 		update_element_area()
 
 func update_property(prop_name : String, prop_value: Variant) -> void:
 	if GODOT_ARIA_UTILS.is_web():
-		if input_ref and input_ref.element:
-			input_ref.element[prop_name] = prop_value
+		if ref and ref.element:
+			ref.element[prop_name] = prop_value
 
 func update_element_area() -> void:
 	if GODOT_ARIA_UTILS.is_web():
 		element_transform = GODOT_ARIA_UTILS.get_control_css_transform(container, parent_control)
-	if !godot_aria or !element_transform or !input_ref: return
+	if !godot_aria or !element_transform or !ref: return
 	godot_aria.aria_proxy.redraw_element(
-		input_ref.element,
+		ref.element,
 		GODOT_ARIA_UTILS.dictionary_to_js(element_transform),
 		# Opacity is always set to zero for hidden DOM elements except containers:
 		1.0 if CONTAINER_ROLES.has(role) else 0

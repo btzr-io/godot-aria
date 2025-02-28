@@ -133,12 +133,16 @@ body {
 #dom-layer input[data-layer='overlay'] {
 	/* Customization */
 	--text_size: 16px;
-	--text_font:'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	--text_align: 'left';
 	--text_color: white;
+	--text_transform: none;
+	--text_font:'Noto Sans', 'Droid Sans', Arial, sans-serif;
 	--placeholder_color: lightgray;
 	--selection_color: Highlight;
 	--selection_text_color: HighlightText;
 	color: var(--text_color);
+	text-align: var(--text_align);
+	text-transform: var(--text_transform);
 	font-size: var(--text_size);
 	font-family: var(--text_font);
 	transform-origin: top left;
@@ -151,13 +155,14 @@ body {
 
 #dom-layer input[data-layer='overlay']::placeholder{
   color: var(--placeholder_color);
+	text-transform: none;
 }
 		</style>
 		$GODOT_HEAD_INCLUDE
 	</head>
 	<body>
 		<!-- Interactive content -->
-		<canvas id="canvas" role="application" aria-roledescription="Game" aria-owns="dom-layer"></canvas>
+		<canvas id="canvas" role="application" aria-roledescription=" " aria-owns="dom-layer"></canvas>
 		<div id="dom-layer"></div>
 		<!-- Live updates / notifications -->
 		<div id="global-live-region" aria-live="polite" aria-relevant="all" data-hidden="true"></div>

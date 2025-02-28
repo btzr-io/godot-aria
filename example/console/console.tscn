@@ -63,3 +63,6 @@ id = "console-input"
 placeholder = "Type command..."
 aria_label = "Input"
 max_length = 64
+cache_init_min_size = Vector2(100, 24)
+cache_init_focus_mode = 2
+cache_init_clip_contents = true

@@ -25,8 +25,7 @@ func _init(current_tree, current_viewport)  -> void:
 
 func update():
 	var current = viewport.gui_get_focus_owner()
-	if current:
-		GodotARIA.focus_manager.handle_focus_changed(current)
+	godot_aria.focus_manager.handle_focus_changed(current)
 
 func has_focus():
 	if !OS.has_feature("web"): return
@@ -35,7 +34,7 @@ func has_focus():
 func has_initial_focus_target() -> bool:
 	scan_focus_list()
 	return !focus_list.is_empty()
-	
+
 func scan_focus_list():
 	if !OS.has_feature("web"): return
 	focus_list.clear()
@@ -76,9 +75,15 @@ func trap_focus():
 		trap_prev_focus = true
 		godot_aria.aria_proxy.update_trap_focus(true, true)
 
-func handle_focus_changed(control: Control):
+func handle_focus_changed(control: Variant):
 	if !OS.has_feature("web"): return
 	scan_focus_list()
+
+	# Handle focus lost ( removed, hidden, etc..)
+	if !control:
+		trap_focus()
+		return
+			
 	next_focus = control.find_next_valid_focus()
 	prev_focus = control.find_prev_valid_focus()
 	last_focus = control
@@ -90,7 +95,10 @@ func handle_focus_changed(control: Control):
 	else:
 		trap_prev_focus = false
 		trap_next_focus = false
-	
+
 	if godot_aria and godot_aria.aria_proxy:
 		godot_aria.aria_proxy.focus_enter_position = ""
-		godot_aria.aria_proxy.update_trap_focus(trap_prev_focus, trap_next_focus)
+		if godot_aria.application_mode:
+			godot_aria.aria_proxy.update_trap_focus(true, true)
+		else:
+			godot_aria.aria_proxy.update_trap_focus(trap_prev_focus, trap_next_focus)

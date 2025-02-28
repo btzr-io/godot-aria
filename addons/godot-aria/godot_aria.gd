@@ -1,22 +1,30 @@
 extends Node2D
+
 # Global javascript interface:
 # Accessible from window.GODOT_ARIA_PROXY on the browser.
 var aria_proxy : JavaScriptObject = JavaScriptBridge.get_interface("GODOT_ARIA_PROXY")
-
-# Print debug messages
-var debug: bool = true
-
-# Cahce to detect updates
-var last_message : String = ""
-var last_message_raw : String = ""
-var overlay_transform : Dictionary
-var prev_overlay_transform : Dictionary = {}
 
 # Focus managment
 var focus_manager : FocusManager
 
 # VisualViewport API
 var visual_viewport : JavaScriptObject
+
+# Cahce to detect updates
+var overlay_transform : Dictionary
+var prev_overlay_transform : Dictionary
+
+## Settings
+
+# Print debug messages
+var debug: bool
+
+# Enforce focus trap
+var application_mode : bool :
+	set(value):
+		application_mode = value
+		if focus_manager:
+			focus_manager.update()
 
 func _enter_tree() -> void:
 	if !OS.has_feature("web"): return
@@ -85,7 +93,7 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 		# Before exit focus
-		if !focus_manager.trap_prev_focus:
+		if !application_mode and !focus_manager.trap_prev_focus:
 			get_viewport().set_input_as_handled()
 			get_viewport().gui_release_focus()
 			
@@ -95,7 +103,7 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 		# Before exit focus
-		if !focus_manager.trap_next_focus:
+		if !application_mode and !focus_manager.trap_next_focus:
 			get_viewport().set_input_as_handled()
 			get_viewport().gui_release_focus()
 
@@ -123,12 +131,6 @@ func _ready() -> void:
 	
 func debug_log(message):
 	if debug: print_debug(message)
-	
-func parse_message(message):
-	var result : String = str(message)
-	last_message = result
-	last_message_raw = message
-	return result
 
 func focus_canvas() -> void:
 	if OS.has_feature("web") and aria_proxy != null:
@@ -140,14 +142,14 @@ func unfocus_canvas() -> void:
 	
 func notify_screen_reader(message, reannounce : bool = false, lang : String = TranslationServer.get_locale()) -> void:
 	if OS.has_feature("web") and aria_proxy != null:
-		var format_message = parse_message(message)
+		var format_message : String = str(message)
 		debug_log("Speak: " + format_message)
 		aria_proxy.update_live_region(format_message, "polite", reannounce, lang)
 		
 func alert_screen_reader(message,reannounce : bool = false, lang : String = TranslationServer.get_locale()) -> void:
 	if OS.has_feature("web") and aria_proxy != null:
-		var format_message = parse_message(message)
-		debug_log("Alert: " + str(message))
+		var format_message : String = str(message)
+		debug_log("Alert: " + format_message)
 		aria_proxy.update_live_region(format_message, "assertive", reannounce, lang)
 
 func get_media_feature(feature: String):

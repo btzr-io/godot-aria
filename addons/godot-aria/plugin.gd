@@ -14,7 +14,7 @@ func _exit_tree() -> void:
 	export_plugin = null
 
 func _enable_plugin():
-	add_autoload_singleton(AUTOLOAD_NAME, "./godot_aria.gd")
+	add_autoload_singleton(AUTOLOAD_NAME, "res://addons/godot-aria/godot_aria.gd")
 
 func _disable_plugin():
 	remove_autoload_singleton(AUTOLOAD_NAME)

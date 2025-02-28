@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bdy2tk2c7qth2"]
+[gd_scene load_steps=5 format=3 uid="uid://bdy2tk2c7qth2"]
 
 [ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/label.gd" id="1_x7c80"]
+
+[sub_resource type="Theme" id="Theme_xkoyx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgwuo"]
 content_margin_left = 16.0
@@ -18,13 +20,18 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="Theme" id="Theme_6rxkl"]
+
 [node name="Box" type="PanelContainer"]
 offset_right = 100.0
 offset_bottom = 31.0
 mouse_filter = 2
+theme = SubResource("Theme_xkoyx")
 theme_override_styles/panel = SubResource("StyleBoxFlat_tgwuo")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
+size_flags_vertical = 1
+theme = SubResource("Theme_6rxkl")
 vertical_alignment = 1
 script = ExtResource("1_x7c80")
