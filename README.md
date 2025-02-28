@@ -68,7 +68,7 @@ To update an aria value or any property of the hidden dom element use the [Acces
 ```gdscript
 extends Button
 
-@onready var accessible_node = GodotAria.get_accesible_node(self)
+@onready var accessible_node = GodotAria.get_accessible_node(self)
 
 # By default Label and RichText label are exposed with the 'paragraph' role
 var aria_label = "An accessible name" :
