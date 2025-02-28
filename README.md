@@ -104,7 +104,20 @@ var aria_level = 1
 ```
 
 ### Additional utilities
-Use the global class `GodotARIA` to call utility functions. 
+
+Use the global class `GodotARIA` to configure or call utility functions. 
+
+### GodotARIA.debug
+Set to true to enable debug logs, default to false.
+```gdscript
+  GodotARIA.debug = false
+```
+
+### GodotARIA.application_mode
+Set to true to trap focus, default to false.
+```gdscript
+    GodotARIA.application_mode = false
+```
 
 ### GodotARIA.focus_canvas
 Focus the current canvas element.
