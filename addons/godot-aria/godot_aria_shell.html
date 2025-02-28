@@ -179,7 +179,6 @@ const ARIA_PROXY = class {
 		this.canvas = window.canvas;
 		this.trap_next_focus = false;
 		this.trap_prev_focus = false;
-		this.force_focus_trap = false;
 		this.enter_focus_position = '';
 		this.dom_refs = {}
 		this.dom_layer = document.getElementById('dom-layer');
@@ -235,9 +234,6 @@ const ARIA_PROXY = class {
 	}
 
 	is_focus_trap(evt, arrowKeys = true) {
-		if (this.force_focus_trap) {
-			return true
-		}
 		if (evt.key == 'Tab') {
 			var tab_direction = evt.shiftKey ? 'PREV' : 'NEXT';
 		}
