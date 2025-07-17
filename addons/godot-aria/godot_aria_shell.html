@@ -55,6 +55,20 @@ body {
 	margin: auto;
 }
 
+#status-splash.show-image--false {
+	display: none;
+}
+
+#status-splash.fullsize--true {
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+
+#status-splash.use-filter--false {
+	image-rendering: pixelated;
+}
+
 #status-progress, #status-notice {
 	display: block;
 }
@@ -168,7 +182,7 @@ body {
 		<div id="global-live-region" aria-live="polite" aria-relevant="all" data-hidden="true"></div>
 		<!-- Status -->
 		<div id="status" inert>
-			<img id="status-splash" src="$GODOT_SPLASH" alt="" aria-hidden="true">
+			<img id="status-splash" class="$GODOT_SPLASH_CLASSES" src="$GODOT_SPLASH" alt="" aria-hidden="true">
 			<progress id="status-progress" data-hidden="true" max="100" aria-hidden="true"></progress>
 			<div id="status-notice" data-hidden="true" aria-live="assertive"></div>
 		</div>
