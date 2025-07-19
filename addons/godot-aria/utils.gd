@@ -25,15 +25,15 @@ static func get_control_css_transform(control: Control, parent_control: Variant)
 		real_position =  (real_position / real_transform.get_scale()) - (parent_transform.origin / parent_transform.get_scale()) 
 		
 	var result = {
-		top = snapped(real_position.y, 0.001), 
-		left = snapped(real_position.x, 0.001), 
-		width = round(control.size.x), 
-		height = round(control.size.y),
-		scale_x = snapped(real_scale.x, 0.001),
-		scale_y = snapped(real_scale.y, 0.001),
-		rotation = snapped(real_transform.get_rotation(), 0.001),
-		pivot_x = control.pivot_offset.x,
-		pivot_y = control.pivot_offset.y
+		"top": snapped(real_position.y, 0.001), 
+		"left": snapped(real_position.x, 0.001), 
+		"width": round(control.size.x), 
+		"height": round(control.size.y),
+		"scale_x": snapped(real_scale.x, 0.001),
+		"scale_y": snapped(real_scale.y, 0.001),
+		"rotation": snapped(real_transform.get_rotation(), 0.001),
+		"pivot_x": control.pivot_offset.x,
+		"pivot_y": control.pivot_offset.y
 	}
 	return result
 
