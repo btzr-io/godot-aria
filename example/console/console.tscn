@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://4sehw20g588h"]
 
-[ext_resource type="Script" path="res://example/console/console.gd" id="1_l8r6s"]
-[ext_resource type="Script" path="res://example/console/output.gd" id="2_sbmgu"]
-[ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="3_klxvb"]
+[ext_resource type="Script" uid="uid://87o6fa0bbu86" path="res://example/console/console.gd" id="1_l8r6s"]
+[ext_resource type="Script" uid="uid://cg23jky03ianw" path="res://example/console/output.gd" id="2_sbmgu"]
+[ext_resource type="Script" uid="uid://ba3auhumhitx3" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="3_klxvb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ga1vd"]
 content_margin_left = 12.0

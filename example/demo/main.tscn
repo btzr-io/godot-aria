@@ -1,11 +1,11 @@
 [gd_scene load_steps=8 format=3 uid="uid://clofup1uh0coq"]
 
-[ext_resource type="Script" path="res://example/main.gd" id="1_8b57x"]
-[ext_resource type="Script" path="res://example/demo/heading.gd" id="2_w5ef5"]
-[ext_resource type="Script" path="res://example/demo/button.gd" id="3_p2gpr"]
-[ext_resource type="Script" path="res://example/demo/slider.gd" id="4_m2jlx"]
-[ext_resource type="Script" path="res://example/demo/progress_bar.gd" id="5_8c68p"]
-[ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="6_1ro7k"]
+[ext_resource type="Script" uid="uid://dinb1w6jvt55l" path="res://example/main.gd" id="1_8b57x"]
+[ext_resource type="Script" uid="uid://12i4vcurkgwq" path="res://example/demo/heading.gd" id="2_w5ef5"]
+[ext_resource type="Script" uid="uid://d0pxass5yupik" path="res://example/demo/button.gd" id="3_p2gpr"]
+[ext_resource type="Script" uid="uid://4jvnly2wtl0v" path="res://example/demo/slider.gd" id="4_m2jlx"]
+[ext_resource type="Script" uid="uid://bv12pj2q35k73" path="res://example/demo/progress_bar.gd" id="5_8c68p"]
+[ext_resource type="Script" uid="uid://ba3auhumhitx3" path="res://addons/godot-aria/nodes/web_text_input/web_text_input.gd" id="6_1ro7k"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a5a0x"]
 
@@ -91,3 +91,6 @@ focus_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_a5a0x")
 script = ExtResource("6_1ro7k")
 id = "input-text"
+cache_init_min_size = Vector2(100, 24)
+cache_init_focus_mode = 2
+cache_init_clip_contents = true

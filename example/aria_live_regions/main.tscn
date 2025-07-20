@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://248hdhm2uafh"]
 
-[ext_resource type="Script" path="res://example/aria_live_regions/button.gd" id="1_k6j8v"]
-[ext_resource type="Script" path="res://example/aria_live_regions/main.gd" id="1_ruw48"]
+[ext_resource type="Script" uid="uid://br0v4b8ik0bs3" path="res://example/aria_live_regions/button.gd" id="1_k6j8v"]
+[ext_resource type="Script" uid="uid://f3meos5ao1a7" path="res://example/aria_live_regions/main.gd" id="1_ruw48"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_ruw48")

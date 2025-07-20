@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bdy2tk2c7qth2"]
 
-[ext_resource type="Script" path="res://addons/godot-aria/nodes/web_text_input/label.gd" id="1_x7c80"]
+[ext_resource type="Script" uid="uid://dokxbvvbgc7eq" path="res://addons/godot-aria/nodes/web_text_input/label.gd" id="1_x7c80"]
 
 [sub_resource type="Theme" id="Theme_xkoyx"]
 
